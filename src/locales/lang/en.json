@@ -1,0 +1,194 @@
+{
+  "common": {
+    "appName": "EnglishAI",
+    "appTagline": "Learn English smarter with AI"
+  },
+  "nav": {
+    "home": "Home",
+    "vocabulary": "Vocabulary",
+    "grammar": "Grammar",
+    "listening": "Listening",
+    "speaking": "Speaking",
+    "quiz": "Quiz",
+    "aiChat": "AI Chatbot",
+    "profile": "Profile",
+    "logout": "Logout",
+    "comingSoon": "Coming soon"
+  },
+  "landing": {
+    "nav": {
+      "signIn": "Sign in",
+      "signUpFree": "Sign up for free"
+    },
+    "hero": {
+      "badge": "AI-powered learning",
+      "title1": "Learn English",
+      "title2": "smarter with AI",
+      "subtitle": "Personalized learning paths · Spaced-repetition flashcards · AI speaking practice · Real-world quizzes from A1 to C1",
+      "startFree": "Get started for free",
+      "signIn": "Sign in"
+    },
+    "stats": {
+      "vocabulary": "Vocabulary words",
+      "quizzes": "Quizzes",
+      "levels": "Levels",
+      "assistant": "AI assistant 24/7"
+    },
+    "features": {
+      "badge": "Features",
+      "title": "Everything you need",
+      "subtitle": "A complete platform for learning English from beginner to advanced",
+      "vocabulary": {
+        "title": "Smart vocabulary",
+        "desc": "Spaced-repetition flashcards help you retain vocabulary long-term using scientific methods."
+      },
+      "quiz": {
+        "title": "Practice quizzes",
+        "desc": "Dozens of quizzes by topic and level from A1 to C1 with detailed explanations for each question."
+      },
+      "grammar": {
+        "title": "Systematic grammar",
+        "desc": "Structured grammar lessons with fill-in-the-blank and multiple-choice exercises."
+      },
+      "listening": {
+        "title": "Listening practice",
+        "desc": "Audio exercises across many topics with transcripts and comprehension questions."
+      },
+      "speaking": {
+        "title": "AI speaking practice",
+        "desc": "Record your pronunciation and get AI-powered scoring and feedback on every syllable."
+      },
+      "aiChat": {
+        "title": "AI Chatbot 24/7",
+        "desc": "Practice conversation with an AI assistant anytime, with instant grammar and vocabulary corrections."
+      }
+    },
+    "cta": {
+      "title": "Start your English learning journey today",
+      "subtitle": "Free · No credit card required · Get started in 30 seconds",
+      "button": "Create free account"
+    },
+    "footer": {
+      "thesis": "Graduation thesis — UTCT"
+    }
+  },
+  "auth": {
+    "signIn": {
+      "title": "Sign in",
+      "subtitle": "Welcome back 👋",
+      "username": "Username",
+      "usernamePlaceholder": "Enter your username",
+      "password": "Password",
+      "passwordPlaceholder": "Enter your password",
+      "forgotPassword": "Forgot password?",
+      "submit": "Sign in",
+      "orContinueWith": "or continue with",
+      "googleSignIn": "Sign in with Google",
+      "noAccount": "Don't have an account?",
+      "signUpLink": "Sign up",
+      "validation": {
+        "usernameRequired": "Username is required",
+        "passwordRequired": "Password is required"
+      }
+    },
+    "signUp": {
+      "title": "Create account",
+      "subtitle": "Free · Start learning today",
+      "username": "Username",
+      "usernamePlaceholder": "username",
+      "password": "Password",
+      "passwordPlaceholder": "At least 8 characters",
+      "fullName": "Full name",
+      "fullNamePlaceholder": "John Doe",
+      "email": "Email",
+      "emailPlaceholder": "example@email.com",
+      "phone": "Phone number",
+      "phonePlaceholder": "+1 234 567 890",
+      "gender": "Gender",
+      "genderPlaceholder": "Select gender",
+      "genderMale": "Male",
+      "genderFemale": "Female",
+      "genderOther": "Other",
+      "dob": "Date of birth",
+      "dobPlaceholder": "DD/MM/YYYY",
+      "submit": "Create account",
+      "hasAccount": "Already have an account?",
+      "signInLink": "Sign in",
+      "redirecting": "Redirecting to sign in...",
+      "validation": {
+        "usernameRequired": "Username is required",
+        "usernameMin": "At least 4 characters",
+        "usernameMax": "At most 50 characters",
+        "passwordRequired": "Password is required",
+        "passwordMin": "At least 8 characters",
+        "fullNameRequired": "Full name is required",
+        "emailRequired": "Email is required",
+        "emailInvalid": "Invalid email address",
+        "phoneRequired": "Phone number is required"
+      }
+    },
+    "forgotPassword": {
+      "title": "Forgot password",
+      "subtitle": "Enter your registered email and we'll send you a password reset link.",
+      "email": "Email",
+      "emailPlaceholder": "Enter your registered email",
+      "submit": "Send reset email",
+      "backToSignIn": "Back to sign in",
+      "validation": {
+        "emailRequired": "Email is required",
+        "emailInvalid": "Invalid email address"
+      }
+    }
+  },
+  "vocabulary": {
+    "title": "Vocabulary",
+    "learned": "learned",
+    "mastered": "mastered",
+    "streak": "days",
+    "reviewDue": "review",
+    "allLevels": "All",
+    "start": "Start",
+    "continue": "Continue",
+    "wordList": "Word list",
+    "flashcard": "Flashcards",
+    "status": {
+      "new": "New",
+      "learning": "Learning",
+      "mastered": "Mastered"
+    },
+    "flashcardRate": {
+      "question": "How well do you remember this word?",
+      "forgot": "Forgot",
+      "hard": "Hard",
+      "ok": "Good",
+      "easy": "Easy"
+    },
+    "session": {
+      "done": "Session Done!",
+      "remembered": "Words remembered",
+      "xpEarned": "XP earned",
+      "reviewAgain": "Review again",
+      "continue": "Continue"
+    }
+  },
+  "quiz": {
+    "title": "Quiz",
+    "available": "quizzes",
+    "completed": "completed",
+    "avgScore": "Avg score",
+    "allTopics": "All",
+    "start": "Start quiz",
+    "retake": "Retake",
+    "backToList": "Back to quizzes",
+    "questions": "questions",
+    "minutes": "min",
+    "bestScore": "Best score",
+    "history": "Recent history",
+    "result": {
+      "title": "Quiz result",
+      "correct": "Correct",
+      "wrong": "Wrong",
+      "xpEarned": "XP"
+    }
+  }
+}

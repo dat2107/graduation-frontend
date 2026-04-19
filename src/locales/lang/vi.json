@@ -1,0 +1,194 @@
+{
+  "common": {
+    "appName": "EnglishAI",
+    "appTagline": "Học tiếng Anh thông minh hơn với AI"
+  },
+  "nav": {
+    "home": "Trang chủ",
+    "vocabulary": "Từ vựng",
+    "grammar": "Ngữ pháp",
+    "listening": "Nghe",
+    "speaking": "Nói",
+    "quiz": "Kiểm tra",
+    "aiChat": "AI Chatbot",
+    "profile": "Hồ sơ cá nhân",
+    "logout": "Đăng xuất",
+    "comingSoon": "Sắp có"
+  },
+  "landing": {
+    "nav": {
+      "signIn": "Đăng nhập",
+      "signUpFree": "Đăng ký miễn phí"
+    },
+    "hero": {
+      "badge": "Tích hợp AI tiên tiến",
+      "title1": "Học tiếng Anh",
+      "title2": "thông minh hơn với AI",
+      "subtitle": "Lộ trình học cá nhân hóa · Flashcard spaced-repetition · Luyện nói với AI · Quiz thực chiến từ A1 đến C1",
+      "startFree": "Bắt đầu miễn phí",
+      "signIn": "Đăng nhập"
+    },
+    "stats": {
+      "vocabulary": "Từ vựng",
+      "quizzes": "Bài quiz",
+      "levels": "Trình độ",
+      "assistant": "Trợ lý 24/7"
+    },
+    "features": {
+      "badge": "Tính năng",
+      "title": "Tất cả những gì bạn cần",
+      "subtitle": "Một nền tảng hoàn chỉnh để học tiếng Anh từ cơ bản đến nâng cao",
+      "vocabulary": {
+        "title": "Từ vựng thông minh",
+        "desc": "Flashcard spaced-repetition giúp bạn ghi nhớ từ vựng lâu dài theo phương pháp khoa học."
+      },
+      "quiz": {
+        "title": "Quiz kiểm tra",
+        "desc": "Hàng chục bài kiểm tra theo chủ đề và trình độ từ A1 đến C1, giải thích chi tiết mỗi câu."
+      },
+      "grammar": {
+        "title": "Ngữ pháp hệ thống",
+        "desc": "Bài học ngữ pháp có cấu trúc, bài tập điền từ và trắc nghiệm đa dạng."
+      },
+      "listening": {
+        "title": "Luyện nghe",
+        "desc": "Audio bài nghe theo nhiều chủ đề, kèm transcript và câu hỏi kiểm tra."
+      },
+      "speaking": {
+        "title": "Luyện nói với AI",
+        "desc": "Ghi âm phát âm, AI nhận diện và cho điểm phát âm theo từng âm tiết."
+      },
+      "aiChat": {
+        "title": "AI Chatbot 24/7",
+        "desc": "Luyện hội thoại với trợ lý AI bất cứ lúc nào, gợi ý sửa lỗi ngay lập tức."
+      }
+    },
+    "cta": {
+      "title": "Bắt đầu hành trình học tiếng Anh hôm nay",
+      "subtitle": "Miễn phí · Không cần thẻ tín dụng · Bắt đầu trong 30 giây",
+      "button": "Tạo tài khoản miễn phí"
+    },
+    "footer": {
+      "thesis": "Đồ án tốt nghiệp ĐHCN GTVT"
+    }
+  },
+  "auth": {
+    "signIn": {
+      "title": "Đăng nhập",
+      "subtitle": "Chào mừng bạn trở lại 👋",
+      "username": "Tên đăng nhập",
+      "usernamePlaceholder": "Nhập tên đăng nhập",
+      "password": "Mật khẩu",
+      "passwordPlaceholder": "Nhập mật khẩu",
+      "forgotPassword": "Quên mật khẩu?",
+      "submit": "Đăng nhập",
+      "orContinueWith": "hoặc tiếp tục với",
+      "googleSignIn": "Đăng nhập với Google",
+      "noAccount": "Chưa có tài khoản?",
+      "signUpLink": "Đăng ký ngay",
+      "validation": {
+        "usernameRequired": "Tên đăng nhập không được trống",
+        "passwordRequired": "Mật khẩu không được để trống"
+      }
+    },
+    "signUp": {
+      "title": "Tạo tài khoản",
+      "subtitle": "Miễn phí · Bắt đầu học ngay hôm nay",
+      "username": "Tên đăng nhập",
+      "usernamePlaceholder": "username",
+      "password": "Mật khẩu",
+      "passwordPlaceholder": "Tối thiểu 8 ký tự",
+      "fullName": "Họ và tên",
+      "fullNamePlaceholder": "Nguyễn Văn A",
+      "email": "Email",
+      "emailPlaceholder": "example@email.com",
+      "phone": "Số điện thoại",
+      "phonePlaceholder": "0912 345 678",
+      "gender": "Giới tính",
+      "genderPlaceholder": "Chọn giới tính",
+      "genderMale": "Nam",
+      "genderFemale": "Nữ",
+      "genderOther": "Khác",
+      "dob": "Ngày sinh",
+      "dobPlaceholder": "DD/MM/YYYY",
+      "submit": "Tạo tài khoản",
+      "hasAccount": "Đã có tài khoản?",
+      "signInLink": "Đăng nhập",
+      "redirecting": "Đang chuyển hướng đến trang đăng nhập...",
+      "validation": {
+        "usernameRequired": "Tên đăng nhập không được trống",
+        "usernameMin": "Tối thiểu 4 ký tự",
+        "usernameMax": "Tối đa 50 ký tự",
+        "passwordRequired": "Mật khẩu không được trống",
+        "passwordMin": "Tối thiểu 8 ký tự",
+        "fullNameRequired": "Họ và tên không được trống",
+        "emailRequired": "Email không được trống",
+        "emailInvalid": "Email không hợp lệ",
+        "phoneRequired": "Số điện thoại không được trống"
+      }
+    },
+    "forgotPassword": {
+      "title": "Quên mật khẩu",
+      "subtitle": "Nhập email đăng ký, chúng tôi sẽ gửi link đặt lại mật khẩu.",
+      "email": "Email",
+      "emailPlaceholder": "Nhập email đã đăng ký",
+      "submit": "Gửi email đặt lại mật khẩu",
+      "backToSignIn": "Quay lại đăng nhập",
+      "validation": {
+        "emailRequired": "Email không được trống",
+        "emailInvalid": "Email không hợp lệ"
+      }
+    }
+  },
+  "vocabulary": {
+    "title": "Từ vựng",
+    "learned": "đã học",
+    "mastered": "đã thuộc",
+    "streak": "ngày",
+    "reviewDue": "ôn",
+    "allLevels": "Tất cả",
+    "start": "Bắt đầu",
+    "continue": "Tiếp tục",
+    "wordList": "Danh sách từ",
+    "flashcard": "Học Flashcard",
+    "status": {
+      "new": "Mới",
+      "learning": "Đang học",
+      "mastered": "Đã thuộc"
+    },
+    "flashcardRate": {
+      "question": "Bạn nhớ từ này ở mức nào?",
+      "forgot": "Quên",
+      "hard": "Khó",
+      "ok": "Được",
+      "easy": "Dễ"
+    },
+    "session": {
+      "done": "Session Done!",
+      "remembered": "Từ nhớ được",
+      "xpEarned": "XP kiếm được",
+      "reviewAgain": "Học lại",
+      "continue": "Tiếp tục"
+    }
+  },
+  "quiz": {
+    "title": "Kiểm tra",
+    "available": "đề thi",
+    "completed": "đã hoàn thành",
+    "avgScore": "Điểm TB",
+    "allTopics": "Tất cả",
+    "start": "Bắt đầu làm bài",
+    "retake": "Làm lại",
+    "backToList": "Về trang Quiz",
+    "questions": "câu hỏi",
+    "minutes": "phút",
+    "bestScore": "Điểm cao",
+    "history": "Lịch sử gần đây",
+    "result": {
+      "title": "Kết quả bài kiểm tra",
+      "correct": "Đúng",
+      "wrong": "Sai",
+      "xpEarned": "XP"
+    }
+  }
+}

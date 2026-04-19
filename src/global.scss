@@ -1,0 +1,13 @@
+@font-face {
+  font-family: Roboto;
+  src: url('./assets/fonts/Roboto-Regular.ttf') format('truetype');
+}
+
+:root {
+  --color-text-subtle: #746b67;
+  --color-text-normal: #594b45;
+  --color-text-strong: #311b12;
+  --color-text-stronger: #150904;
+  --color-border-subtle: #f0f0f0;
+  --color-border-interactive-selected: #5b260c;
+}

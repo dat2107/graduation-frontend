@@ -1,0 +1,13 @@
+.paginationButton {
+  display: flex;
+  align-items: center;
+  border-left: 1px solid #00000014;
+
+  &:disabled {
+    cursor: not-allowed;
+
+    svg {
+      filter: invert(85%) sepia(13%) saturate(0%) hue-rotate(204deg) brightness(94%) contrast(90%);
+    }
+  }
+}
