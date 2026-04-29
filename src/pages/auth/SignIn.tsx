@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import {
   Alert,
   Anchor,
@@ -22,13 +22,24 @@ import {
 } from '@tabler/icons-react'
 import { useTranslation } from 'react-i18next'
 import * as yup from 'yup'
+import appConfig from '@/configs/app.config'
+import { REDIRECT_URL_KEY } from '@/constants/app.constant'
 import useAuth from '@/utils/hooks/useAuth'
 
 export default function SignIn() {
   const { t } = useTranslation()
-  const { signIn } = useAuth()
+  const { signIn, authenticated } = useAuth()
+  const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    if (authenticated) {
+      const redirectUrl = searchParams.get(REDIRECT_URL_KEY)
+      navigate(redirectUrl || appConfig.authenticatedEntryPath, { replace: true })
+    }
+  }, [authenticated])
 
   const schema = yup.object().shape({
     username: yup.string().required(t('auth.signIn.validation.usernameRequired')),

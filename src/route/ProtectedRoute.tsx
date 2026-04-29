@@ -10,6 +10,8 @@ const ProtectedRoute = () => {
 
   const location = useLocation();
 
+  console.log('[ProtectedRoute] path:', location.pathname, '| authenticated:', authenticated)
+
   if (!authenticated) {
     return (
       <Navigate

@@ -1,8 +1,13 @@
-import { lazy, Suspense, useMemo } from 'react';
+import { lazy, Suspense } from 'react';
 import { useLocation } from 'react-router-dom';
 import LoadingScreen from '@/components/LoadingScreen/LoadingScreen';
 import useAuth from '@/utils/hooks/useAuth';
 import useLocale from '@/utils/hooks/useLocale';
+
+// Lazy imports phải khai báo ngoài component để React không tạo lại instance mỗi lần render
+const LandingPage = lazy(() => import('@/pages/LandingPage'));
+const DefaultLayout = lazy(() => import('./LayoutTypes/DefaultLayout'));
+const AuthLayout = lazy(() => import('./AuthLayout'));
 
 export function Layout() {
   const { authenticated } = useAuth();
@@ -10,16 +15,16 @@ export function Layout() {
 
   useLocale();
 
-  const AppLayout = useMemo(() => {
-    // Landing page renders without any layout wrapper (full-page)
-    if (pathname === '/') {
-      return lazy(() => import('@/pages/LandingPage'));
-    }
-    if (authenticated) {
-      return lazy(() => import('./LayoutTypes/DefaultLayout'));
-    }
-    return lazy(() => import('./AuthLayout'));
-  }, [authenticated, pathname]);
+  // Landing page renders without any layout wrapper (full-page)
+  if (pathname === '/') {
+    return (
+      <Suspense fallback={<LoadingScreen />}>
+        <LandingPage />
+      </Suspense>
+    );
+  }
+
+  const AppLayout = authenticated ? DefaultLayout : AuthLayout;
 
   return (
     <Suspense

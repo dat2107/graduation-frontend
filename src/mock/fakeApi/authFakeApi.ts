@@ -1,21 +1,7 @@
-import { Server, Response } from 'miragejs';
+import { Server } from 'miragejs';
 
-export default function authFakeApi(server: Server, apiPrefix: string) {
-  server.post(`${apiPrefix}/users/sign-in`, (schema, { requestBody }) => {
-    const { username: email, password } = JSON.parse(requestBody);
-    const user = schema.db.signInUserData.findBy({
-      email,
-      password,
-    });
-    if (user) {
-      return user;
-    }
-    return new Response(
-      401,
-      { some: 'header' },
-      { message: 'Invalid email or password!' }
-    );
-  });
-
-  server.post(`${apiPrefix}/sign-out`, () => true);
+// Auth APIs are connected to the real backend — no mock handlers needed.
+// Requests to /api/auth/* fall through to this.passthrough() in mock.ts.
+export default function authFakeApi(_server: Server, _apiPrefix: string) {
+  // intentionally empty
 }

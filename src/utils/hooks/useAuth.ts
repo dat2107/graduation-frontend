@@ -28,7 +28,10 @@ function useAuth() {
     try {
       const resp = await AuthService.signIn(values)
       // resp = BaseResponse<LoginResponse>
+      console.log('[useAuth.signIn] resp:', resp)
       const loginData = resp.data
+      console.log('[useAuth.signIn] loginData:', loginData)
+      console.log('[useAuth.signIn] accessToken:', loginData?.accessToken?.slice(0, 20))
       dispatch(
         signInSuccess({
           token: loginData.accessToken,
@@ -45,10 +48,9 @@ function useAuth() {
           googleLogin: false,
         })
       )
-      const redirectUrl = query.get(REDIRECT_URL_KEY)
-      navigate(redirectUrl || appConfig.authenticatedEntryPath)
       return { code: '0', message: 'success' }
     } catch (errors: any) {
+      console.error('[useAuth.signIn] ERROR:', errors)
       return {
         code: 'failed',
         message: errors?.response?.data?.message || errors.toString(),
