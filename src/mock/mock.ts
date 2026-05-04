@@ -18,6 +18,9 @@ export function mockServer() {
 
       // ── Register mock handlers for routes NOT yet connected ────────────
       vocabularyFakeApi(this, apiPrefix);
+      // ── Register specific mock handlers FIRST ─────────────────────────────
+      authFakeApi(this, apiPrefix);
+      // vocabularyFakeApi(this, apiPrefix); // Disabled: using real backend
       quizFakeApi(this, apiPrefix);
 
       // ── Catch-all: pass remaining to real server ───────────────────────
