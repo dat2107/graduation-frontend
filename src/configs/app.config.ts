@@ -17,7 +17,7 @@ const appConfig: AppConfig = {
   apiPrefix: '',
   authenticatedEntryPath: '/dashboard',
   unAuthenticatedEntryPath: '/sign-in',
-  enableMock: true,
+  enableMock: false,
   locale: 'vi',
 };
 

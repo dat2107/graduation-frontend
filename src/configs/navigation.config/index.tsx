@@ -59,9 +59,9 @@ const navigationConfig: NavigationTree[] = [
     disabled: true,
   } as any,
   {
-    key: 'quiz',
-    path: '/quiz',
-    title: 'Kiểm tra',
+    key: 'ielts-practice',
+    path: '/ielts-practice',
+    title: 'Luyện đề IELTS',
     translateKey: '',
     icon: IconListCheck,
     authority: ['STUDENT', 'TEACHER', 'ADMIN'],

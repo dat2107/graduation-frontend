@@ -18,17 +18,17 @@ export const protectedRoutes = [
     component: lazy(() => import('@/pages/profile/Profile')),
     authority: ['STUDENT', 'TEACHER', 'ADMIN'],
   },
-  // ── Quiz ─────────────────────────────────────────────────────────────────────
+  // ── IELTS Practice ──────────────────────────────────────────────────────────
   {
-    key: 'quiz',
-    path: '/quiz',
-    component: lazy(() => import('@/pages/quiz/QuizPage')),
+    key: 'ielts-practice',
+    path: '/ielts-practice',
+    component: lazy(() => import('@/pages/ielts-practice/IeltsPracticePage')),
     authority: ['STUDENT', 'TEACHER', 'ADMIN'],
   },
   {
-    key: 'quiz.detail',
-    path: '/quiz/:quizId',
-    component: lazy(() => import('@/pages/quiz/QuizDetailPage')),
+    key: 'ielts-practice.detail',
+    path: '/ielts-practice/:testId',
+    component: lazy(() => import('@/pages/ielts-practice/IeltsTestDetailPage')),
     authority: ['STUDENT', 'TEACHER', 'ADMIN'],
   },
   // ── Vocabulary ───────────────────────────────────────────────────────────────

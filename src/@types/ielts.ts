@@ -1,8 +1,8 @@
 // ─── IELTS Practice Types ─────────────────────────────────────────────────────
 
-export type IeltsSkill = 'reading' | 'listening'
-export type IeltsDifficulty = 'easy' | 'medium' | 'hard'
-export type IeltsQuestionType = 'multiple_choice' | 'true_false' | 'fill_in_blank'
+export type IeltsSkill = 'READING' | 'LISTENING'
+export type IeltsDifficulty = 'EASY' | 'MEDIUM' | 'HARD'
+export type IeltsQuestionType = 'MULTIPLE_CHOICE' | 'TRUE_FALSE' | 'FILL_IN_BLANK'
 
 export interface IeltsOption {
   optionKey: string
@@ -12,7 +12,7 @@ export interface IeltsOption {
 export interface IeltsQuestion {
   id: number
   orderIndex: number
-  type: IeltsQuestionType
+  questionType: IeltsQuestionType
   questionText: string
   passage: string | null
   options: IeltsOption[]
@@ -32,16 +32,7 @@ export interface IeltsTest {
   bestScore: number | null
 }
 
-export interface IeltsTestDetail {
-  id: number
-  title: string
-  description: string
-  skill: IeltsSkill
-  level: string
-  questionCount: number
-  durationMinutes: number
-  difficulty: IeltsDifficulty
-  audioUrl: string | null
+export interface IeltsTestDetail extends IeltsTest {
   questions: IeltsQuestion[]
 }
 
@@ -52,8 +43,7 @@ export interface IeltsSubmitRequest {
 
 export interface IeltsAnswerDetail {
   questionId: number
-  questionText: string
-  selectedAnswer: string
+  selectedAnswer: string | null
   correctAnswer: string
   isCorrect: boolean
   explanation: string
@@ -62,7 +52,7 @@ export interface IeltsAnswerDetail {
 export interface IeltsSubmitResult {
   testId: number
   totalQuestions: number
-  correctAnswers: number
+  correctCount: number
   score: number
   timeTakenSeconds: number
   xpEarned: number
