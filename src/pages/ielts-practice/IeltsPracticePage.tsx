@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react';
 import {
   Badge,
   Button,
@@ -12,7 +12,7 @@ import {
   Text,
   ThemeIcon,
   Title,
-} from '@mantine/core'
+} from '@mantine/core';
 import {
   IconBook,
   IconCheck,
@@ -22,23 +22,34 @@ import {
   IconListCheck,
   IconStar,
   IconTrophy,
-} from '@tabler/icons-react'
-import { useNavigate } from 'react-router-dom'
-import { IeltsService } from '@/services/ielts/ielts.service'
-import type { IeltsDifficulty, IeltsHistoryItem, IeltsSkill, IeltsTest } from '@/@types/ielts'
+} from '@tabler/icons-react';
+import { useNavigate } from 'react-router-dom';
+import { IeltsService } from '@/services/ielts/ielts.service';
+import type {
+  IeltsDifficulty,
+  IeltsHistoryItem,
+  IeltsSkill,
+  IeltsTest,
+} from '@/@types/ielts';
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
-const difficultyConfig: Record<IeltsDifficulty, { label: string; color: string }> = {
+const difficultyConfig: Record<
+  IeltsDifficulty,
+  { label: string; color: string }
+> = {
   EASY: { label: 'Dễ', color: 'green' },
   MEDIUM: { label: 'Trung bình', color: 'yellow' },
   HARD: { label: 'Khó', color: 'red' },
-}
+};
 
-const skillConfig: Record<IeltsSkill, { label: string; icon: typeof IconBook; color: string }> = {
+const skillConfig: Record<
+  IeltsSkill,
+  { label: string; icon: typeof IconBook; color: string }
+> = {
   READING: { label: 'Reading', icon: IconBook, color: 'blue' },
   LISTENING: { label: 'Listening', icon: IconHeadphones, color: 'violet' },
-}
+};
 
 const SKILL_TABS = [
   { value: 'all', label: 'Tất cả' },
@@ -46,18 +57,43 @@ const SKILL_TABS = [
   { value: 'LISTENING', label: 'Listening' },
   { value: 'WRITING', label: 'Writing', disabled: true },
   { value: 'SPEAKING', label: 'Speaking', disabled: true },
-]
+];
 
 // ─── Test Card ───────────────────────────────────────────────────────────────
 
-function IeltsTestCard({ test, onClick }: { test: IeltsTest; onClick: () => void }) {
-  const diff = difficultyConfig[test.difficulty]
-  const skill = skillConfig[test.skill]
-  const SkillIcon = skill.icon
-  const isNew = test.completedCount === 0
+function IeltsTestCard({
+  test,
+  onClick,
+}: {
+  test: IeltsTest;
+  onClick: () => void;
+}) {
+  const skillKey = test.skill?.toUpperCase() as IeltsSkill;
+  const diffKey = test.difficulty?.toUpperCase() as IeltsDifficulty;
+
+  // ✅ fallback để không bao giờ crash
+  const skill = skillConfig[skillKey] ?? {
+    label: test.skill ?? 'Unknown',
+    icon: IconBook,
+    color: 'gray',
+  };
+
+  const diff = difficultyConfig[diffKey] ?? {
+    label: test.difficulty ?? 'Unknown',
+    color: 'gray',
+  };
+
+  const SkillIcon = skill.icon;
+  const isNew = (test.completedCount ?? 0) === 0;
 
   return (
-    <Card withBorder radius="md" shadow="xs" p={0} style={{ overflow: 'hidden' }}>
+    <Card
+      withBorder
+      radius="md"
+      shadow="xs"
+      p={0}
+      style={{ overflow: 'hidden' }}
+    >
       <Card.Section
         style={{
           background: `var(--mantine-color-${skill.color}-1)`,
@@ -70,9 +106,15 @@ function IeltsTestCard({ test, onClick }: { test: IeltsTest; onClick: () => void
             <SkillIcon size={20} />
           </ThemeIcon>
           <Group gap={6}>
-            <Badge size="sm" color={skill.color} variant="filled">{skill.label}</Badge>
-            <Badge size="sm" color="gray" variant="light">Band {test.level}</Badge>
-            <Badge size="sm" color={diff.color} variant="light">{diff.label}</Badge>
+            <Badge size="sm" color={skill.color} variant="filled">
+              {skill.label}
+            </Badge>
+            <Badge size="sm" color="gray" variant="light">
+              Band {test.level}
+            </Badge>
+            <Badge size="sm" color={diff.color} variant="light">
+              {diff.label}
+            </Badge>
           </Group>
         </Group>
         <Text fw={700} size="md" mt={8} lineClamp={2} style={{ minHeight: 44 }}>
@@ -88,16 +130,22 @@ function IeltsTestCard({ test, onClick }: { test: IeltsTest; onClick: () => void
         <Group gap="lg">
           <Group gap={4}>
             <IconListCheck size={14} color="var(--mantine-color-gray-6)" />
-            <Text size="xs" c="dimmed">{test.questionCount} câu</Text>
+            <Text size="xs" c="dimmed">
+              {test.questionCount} câu
+            </Text>
           </Group>
           <Group gap={4}>
             <IconClock size={14} color="var(--mantine-color-gray-6)" />
-            <Text size="xs" c="dimmed">{test.durationMinutes} phút</Text>
+            <Text size="xs" c="dimmed">
+              {test.durationMinutes} phút
+            </Text>
           </Group>
           {test.completedCount > 0 && (
             <Group gap={4}>
               <IconCheck size={14} color="var(--mantine-color-green-6)" />
-              <Text size="xs" c="green">{test.completedCount} lần</Text>
+              <Text size="xs" c="green">
+                {test.completedCount} lần
+              </Text>
             </Group>
           )}
         </Group>
@@ -108,15 +156,28 @@ function IeltsTestCard({ test, onClick }: { test: IeltsTest; onClick: () => void
             <Text size="xs" c="dimmed">
               Cao nhất:{' '}
               <Text
-                span fw={700}
-                c={test.bestScore >= 80 ? 'green' : test.bestScore >= 60 ? 'yellow' : 'red'}
+                span
+                fw={700}
+                c={
+                  test.bestScore >= 80
+                    ? 'green'
+                    : test.bestScore >= 60
+                      ? 'yellow'
+                      : 'red'
+                }
               >
                 {test.bestScore}%
               </Text>
             </Text>
             <Progress
               value={test.bestScore}
-              color={test.bestScore >= 80 ? 'green' : test.bestScore >= 60 ? 'yellow' : 'red'}
+              color={
+                test.bestScore >= 80
+                  ? 'green'
+                  : test.bestScore >= 60
+                    ? 'yellow'
+                    : 'red'
+              }
               size="xs"
               radius="xl"
               style={{ flex: 1 }}
@@ -130,64 +191,82 @@ function IeltsTestCard({ test, onClick }: { test: IeltsTest; onClick: () => void
           size="sm"
           fullWidth
           onClick={onClick}
-          leftSection={isNew ? <IconListCheck size={16} /> : <IconFlame size={16} />}
+          leftSection={
+            isNew ? <IconListCheck size={16} /> : <IconFlame size={16} />
+          }
         >
           {isNew ? 'Làm bài' : 'Làm lại'}
         </Button>
       </Stack>
     </Card>
-  )
+  );
 }
 
 // ─── History Row ─────────────────────────────────────────────────────────────
 
 function HistoryRow({ item }: { item: IeltsHistoryItem }) {
-  const scoreColor = item.score >= 80 ? 'green' : item.score >= 60 ? 'yellow' : 'red'
-  const date = new Date(item.completedAt).toLocaleDateString('vi-VN')
-  const skill = skillConfig[item.skill]
+  const scoreColor =
+    item.score >= 80 ? 'green' : item.score >= 60 ? 'yellow' : 'red';
+  const date = new Date(item.completedAt).toLocaleDateString('vi-VN');
+  const skill = skillConfig[item.skill];
   return (
-    <Group justify="space-between" py={8} style={{ borderBottom: '1px solid var(--mantine-color-gray-2)' }}>
+    <Group
+      justify="space-between"
+      py={8}
+      style={{ borderBottom: '1px solid var(--mantine-color-gray-2)' }}
+    >
       <div>
         <Group gap={6} mb={2}>
-          <Badge size="xs" color={skill.color} variant="light">{skill.label}</Badge>
-          <Text size="sm" fw={500}>{item.title}</Text>
+          <Badge size="xs" color={skill.color} variant="light">
+            {skill.label}
+          </Badge>
+          <Text size="sm" fw={500}>
+            {item.title}
+          </Text>
         </Group>
-        <Text size="xs" c="dimmed">{date}</Text>
+        <Text size="xs" c="dimmed">
+          {date}
+        </Text>
       </div>
-      <Badge color={scoreColor} variant="filled" size="md">{item.score}%</Badge>
+      <Badge color={scoreColor} variant="filled" size="md">
+        {item.score}%
+      </Badge>
     </Group>
-  )
+  );
 }
 
 // ─── Main Page ───────────────────────────────────────────────────────────────
 
 export default function IeltsPracticePage() {
-  const navigate = useNavigate()
-  const [tests, setTests] = useState<IeltsTest[]>([])
-  const [history, setHistory] = useState<IeltsHistoryItem[]>([])
-  const [activeSkill, setActiveSkill] = useState('all')
-  const [loading, setLoading] = useState(true)
+  const navigate = useNavigate();
+  const [tests, setTests] = useState<IeltsTest[]>([]);
+  const [history, setHistory] = useState<IeltsHistoryItem[]>([]);
+  const [activeSkill, setActiveSkill] = useState('all');
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetch = async () => {
-      setLoading(true)
-      const params = activeSkill === 'all' ? undefined : { skill: activeSkill }
+      setLoading(true);
+      const params = activeSkill === 'all' ? undefined : { skill: activeSkill };
       const [testsRes, historyRes] = await Promise.all([
         IeltsService.getTests(params),
         IeltsService.getHistory(),
-      ])
-      if (testsRes?.status === 200 && testsRes.data) setTests(testsRes.data)
-      if (historyRes?.status === 200 && historyRes.data) setHistory(historyRes.data)
-      setLoading(false)
-    }
-    fetch()
-  }, [activeSkill])
+      ]);
+      if (testsRes?.status === 200 && testsRes.data) setTests(testsRes.data);
+      if (historyRes?.status === 200 && historyRes.data)
+        setHistory(historyRes.data);
+      setLoading(false);
+    };
+    fetch();
+  }, [activeSkill]);
 
-  const doneCount = tests.filter((t) => t.completedCount > 0).length
+  const doneCount = tests.filter((t) => t.completedCount > 0).length;
   const avgScore =
     history.length > 0
-      ? Math.round(history.reduce((sum, h) => sum + h.score, 0) / history.length)
-      : 0
+      ? Math.round(
+          history.reduce((sum, h) => sum + h.score, 0) / history.length
+        )
+      : 0;
 
   return (
     <Stack gap="xl" p="md">
@@ -202,16 +281,37 @@ export default function IeltsPracticePage() {
       {/* ── Stats row ──────────────────────────────────────────────────── */}
       <SimpleGrid cols={{ base: 3 }} spacing="sm">
         {[
-          { icon: <IconListCheck size={18} />, label: 'Bài có sẵn', value: tests.length, color: 'blue' },
-          { icon: <IconCheck size={18} />, label: 'Đã hoàn thành', value: doneCount, color: 'green' },
-          { icon: <IconTrophy size={18} />, label: 'Điểm TB', value: history.length > 0 ? `${avgScore}%` : '—', color: 'orange' },
+          {
+            icon: <IconListCheck size={18} />,
+            label: 'Bài có sẵn',
+            value: tests.length,
+            color: 'blue',
+          },
+          {
+            icon: <IconCheck size={18} />,
+            label: 'Đã hoàn thành',
+            value: doneCount,
+            color: 'green',
+          },
+          {
+            icon: <IconTrophy size={18} />,
+            label: 'Điểm TB',
+            value: history.length > 0 ? `${avgScore}%` : '—',
+            color: 'orange',
+          },
         ].map((s) => (
           <Card key={s.label} withBorder radius="md" p="md">
             <Group gap="sm">
-              <ThemeIcon size="lg" radius="md" color={s.color} variant="light">{s.icon}</ThemeIcon>
+              <ThemeIcon size="lg" radius="md" color={s.color} variant="light">
+                {s.icon}
+              </ThemeIcon>
               <div>
-                <Text size="xl" fw={700} lh={1}>{s.value}</Text>
-                <Text size="xs" c="dimmed">{s.label}</Text>
+                <Text size="xl" fw={700} lh={1}>
+                  {s.value}
+                </Text>
+                <Text size="xs" c="dimmed">
+                  {s.label}
+                </Text>
               </div>
             </Group>
           </Card>
@@ -219,7 +319,11 @@ export default function IeltsPracticePage() {
       </SimpleGrid>
 
       {/* ── Skill filter ─────────────────────────────────────────────── */}
-      <Tabs value={activeSkill} onChange={(v) => setActiveSkill(v ?? 'all')} variant="pills">
+      <Tabs
+        value={activeSkill}
+        onChange={(v) => setActiveSkill(v ?? 'all')}
+        variant="pills"
+      >
         <Tabs.List>
           {SKILL_TABS.map((t) => (
             <Tabs.Tab key={t.value} value={t.value} disabled={t.disabled}>
@@ -232,7 +336,9 @@ export default function IeltsPracticePage() {
       {/* ── Test grid ────────────────────────────────────────────────── */}
       {loading ? (
         <SimpleGrid cols={{ base: 1, sm: 2, lg: 3 }} spacing="md">
-          {[1, 2, 3, 4, 5].map((i) => <Skeleton key={i} height={280} radius="md" />)}
+          {[1, 2, 3, 4, 5].map((i) => (
+            <Skeleton key={i} height={280} radius="md" />
+          ))}
         </SimpleGrid>
       ) : tests.length === 0 ? (
         <Stack align="center" py="xl">
@@ -256,10 +362,12 @@ export default function IeltsPracticePage() {
         <Stack gap="sm">
           <Title order={4}>Lịch sử làm bài gần đây</Title>
           <Card withBorder radius="md" p="md">
-            {history.map((item, i) => <HistoryRow key={i} item={item} />)}
+            {history.map((item, i) => (
+              <HistoryRow key={i} item={item} />
+            ))}
           </Card>
         </Stack>
       )}
     </Stack>
-  )
+  );
 }
