@@ -62,17 +62,13 @@ function IeltsTestCard({
   test: IeltsTest;
   onClick: () => void;
 }) {
-  const skillKey = test.skill?.toUpperCase() as IeltsSkill;
-  const diffKey = test.difficulty?.toUpperCase() as IeltsDifficulty;
-
-  // ✅ fallback để không bao giờ crash
-  const skill = skillConfig[skillKey] ?? {
+  const skill = skillConfig[test.skill] ?? {
     label: test.skill ?? 'Unknown',
     icon: IconBook,
     color: 'gray',
   };
 
-  const diff = difficultyConfig[diffKey] ?? {
+  const diff = difficultyConfig[test.difficulty] ?? {
     label: test.difficulty ?? 'Unknown',
     color: 'gray',
   };
@@ -202,7 +198,7 @@ function HistoryRow({ item }: { item: IeltsHistoryItem }) {
   const scoreColor =
     item.score >= 80 ? 'green' : item.score >= 60 ? 'yellow' : 'red';
   const date = new Date(item.completedAt).toLocaleDateString('vi-VN');
-  const skill = skillConfig[item.skill];
+  const skill = skillConfig[item.skill] ?? { label: item.skill ?? 'Unknown', color: 'gray' };
   return (
     <Group
       justify="space-between"

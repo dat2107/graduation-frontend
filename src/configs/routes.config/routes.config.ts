@@ -32,6 +32,20 @@ export const protectedRoutes = [
     authority: ['STUDENT', 'TEACHER', 'ADMIN'],
   },
   // ── Vocabulary ───────────────────────────────────────────────────────────────
+  // ── Grammar ──────────────────────────────────────────────────────────────────
+  {
+    key: 'grammar',
+    path: '/grammar',
+    component: lazy(() => import('@/pages/grammar/GrammarPage')),
+    authority: ['STUDENT', 'TEACHER', 'ADMIN'],
+  },
+  {
+    key: 'grammar.detail',
+    path: '/grammar/:lessonId',
+    component: lazy(() => import('@/pages/grammar/GrammarLessonDetail')),
+    authority: ['STUDENT', 'TEACHER', 'ADMIN'],
+  },
+  // ── Vocabulary ───────────────────────────────────────────────────────────────
   {
     key: 'vocabulary',
     path: '/vocabulary',

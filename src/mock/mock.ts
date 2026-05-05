@@ -15,6 +15,7 @@ export function mockServer() {
       this.passthrough('/api/users/**');
       this.passthrough('/api/admin/**');
       this.passthrough('/api/ielts-practice/**');
+      this.passthrough('/api/grammar/**');
 
       // ── Register mock handlers for routes NOT yet connected ────────────
       vocabularyFakeApi(this, apiPrefix);
