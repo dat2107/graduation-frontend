@@ -1,8 +1,4 @@
 import { createServer } from 'miragejs';
-import vocabularyFakeApi from '@/mock/fakeApi/vocabularyFakeApi';
-import appConfig from '@/configs/app.config';
-
-const { apiPrefix } = appConfig;
 
 export function mockServer() {
   return createServer({
@@ -10,17 +6,7 @@ export function mockServer() {
       this.urlPrefix = '';
       this.namespace = '';
 
-      // ── Passthrough: real API routes (connected to backend) ─────────────
-      this.passthrough('/api/auth/**');
-      this.passthrough('/api/users/**');
-      this.passthrough('/api/admin/**');
-      this.passthrough('/api/ielts-practice/**');
-      this.passthrough('/api/grammar/**');
-
-      // ── Register mock handlers for routes NOT yet connected ────────────
-      vocabularyFakeApi(this, apiPrefix);
-
-      // ── Catch-all: pass remaining to real server ───────────────────────
+      // ── All routes passthrough to real backend API ─────────────────────
       this.passthrough();
     },
   });

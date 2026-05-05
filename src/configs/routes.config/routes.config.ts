@@ -45,6 +45,19 @@ export const protectedRoutes = [
     component: lazy(() => import('@/pages/grammar/GrammarLessonDetail')),
     authority: ['STUDENT', 'TEACHER', 'ADMIN'],
   },
+  // ── Listening ───────────────────────────────────────────────────────────────
+  {
+    key: 'listening',
+    path: '/listening',
+    component: lazy(() => import('@/pages/listening/ListeningPage')),
+    authority: ['STUDENT', 'TEACHER', 'ADMIN'],
+  },
+  {
+    key: 'listening.detail',
+    path: '/listening/:lessonId',
+    component: lazy(() => import('@/pages/listening/ListeningLessonDetail')),
+    authority: ['STUDENT', 'TEACHER', 'ADMIN'],
+  },
   // ── Vocabulary ───────────────────────────────────────────────────────────────
   {
     key: 'vocabulary',

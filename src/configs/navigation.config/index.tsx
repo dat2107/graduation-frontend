@@ -45,8 +45,7 @@ const navigationConfig: NavigationTree[] = [
     icon: IconHeadphones,
     authority: ['STUDENT', 'TEACHER', 'ADMIN'],
     subMenu: [],
-    disabled: true,
-  } as any,
+  },
   {
     key: 'speaking',
     path: '/speaking',
