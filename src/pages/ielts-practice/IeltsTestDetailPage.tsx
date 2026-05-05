@@ -330,7 +330,7 @@ function TestScreen({
   }
 
   // Show reading passage once for the test (all questions share same passage)
-  const showPassage = quiz.skill === 'READING' && question.passage
+  const showPassage = quiz.skill === 'reading' && question.passage
 
   return (
     <Stack gap="lg" maw={800} mx="auto">
@@ -350,7 +350,7 @@ function TestScreen({
       </Box>
 
       {/* Audio player for Listening */}
-      {quiz.skill === 'LISTENING' && quiz.audioUrl && (
+      {quiz.skill === 'listening' && quiz.audioUrl && (
         <AudioPlayer url={quiz.audioUrl} />
       )}
 
@@ -370,11 +370,11 @@ function TestScreen({
         <Stack gap="xs" mb="lg">
           <Group gap={8}>
             <Badge size="xs" color={
-              question.questionType === 'FILL_IN_BLANK' ? 'orange'
-              : question.questionType === 'TRUE_FALSE' ? 'teal' : 'blue'
+              question.questionType === 'fill_in_blank' ? 'orange'
+              : question.questionType === 'true_false' ? 'teal' : 'blue'
             } variant="light">
-              {question.questionType === 'FILL_IN_BLANK' ? 'Điền từ'
-              : question.questionType === 'TRUE_FALSE' ? 'True / False / Not Given' : 'Trắc nghiệm'}
+              {question.questionType === 'fill_in_blank' ? 'Điền từ'
+              : question.questionType === 'true_false' ? 'True / False / Not Given' : 'Trắc nghiệm'}
             </Badge>
             <Badge size="xs" color="gray" variant="light">Câu {current + 1}</Badge>
           </Group>
@@ -382,7 +382,7 @@ function TestScreen({
         </Stack>
 
         {/* Fill-in-blank input */}
-        {question.questionType === 'FILL_IN_BLANK' ? (
+        {question.questionType === 'fill_in_blank' ? (
           <TextInput
             placeholder="Nhập đáp án của bạn..."
             value={selected}
@@ -466,7 +466,7 @@ function TestScreen({
 // ─── Intro Screen ────────────────────────────────────────────────────────────
 
 function IntroScreen({ quiz, onStart }: { quiz: IeltsTestDetail; onStart: () => void }) {
-  const isListening = quiz.skill === 'LISTENING'
+  const isListening = quiz.skill === 'listening'
   return (
     <Stack gap="lg" maw={480} mx="auto" align="center" py="xl">
       <ThemeIcon size={64} radius="50%" color={isListening ? 'violet' : 'blue'} variant="light">
@@ -483,7 +483,7 @@ function IntroScreen({ quiz, onStart }: { quiz: IeltsTestDetail; onStart: () => 
             { label: 'Số câu hỏi', value: `${quiz.questionCount} câu` },
             { label: 'Thời gian tham khảo', value: `${quiz.durationMinutes} phút` },
             { label: 'Trình độ', value: `Band ${quiz.level}` },
-            { label: 'Độ khó', value: quiz.difficulty === 'EASY' ? 'Dễ' : quiz.difficulty === 'MEDIUM' ? 'Trung bình' : 'Khó' },
+            { label: 'Độ khó', value: quiz.difficulty === 'easy' ? 'Dễ' : quiz.difficulty === 'medium' ? 'Trung bình' : 'Khó' },
           ].map((row) => (
             <Group key={row.label} justify="space-between">
               <Text size="sm" c="dimmed">{row.label}</Text>

@@ -1,8 +1,8 @@
 // ─── IELTS Practice Types ─────────────────────────────────────────────────────
 
-export type IeltsSkill = 'READING' | 'LISTENING'
-export type IeltsDifficulty = 'EASY' | 'MEDIUM' | 'HARD'
-export type IeltsQuestionType = 'MULTIPLE_CHOICE' | 'TRUE_FALSE' | 'FILL_IN_BLANK'
+export type IeltsSkill = 'reading' | 'listening'
+export type IeltsDifficulty = 'easy' | 'medium' | 'hard'
+export type IeltsQuestionType = 'multiple_choice' | 'true_false' | 'fill_in_blank'
 
 export interface IeltsOption {
   optionKey: string

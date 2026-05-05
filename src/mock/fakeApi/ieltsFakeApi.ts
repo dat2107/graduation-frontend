@@ -48,7 +48,7 @@ export default function ieltsFakeApi(server: Server, apiPrefix: string) {
       const userAnswer = answers[String(q.id)] ?? ''
       let isCorrect = false
 
-      if (q.questionType === 'FILL_IN_BLANK') {
+      if (q.questionType === 'fill_in_blank') {
         const acceptedAnswers = q.correctAnswer.split('|').map((a) => a.trim().toLowerCase())
         isCorrect = acceptedAnswers.includes(userAnswer.trim().toLowerCase())
       } else {

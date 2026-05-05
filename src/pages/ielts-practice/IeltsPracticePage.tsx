@@ -30,22 +30,22 @@ import type { IeltsDifficulty, IeltsHistoryItem, IeltsSkill, IeltsTest } from '@
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
 const difficultyConfig: Record<IeltsDifficulty, { label: string; color: string }> = {
-  EASY: { label: 'Dễ', color: 'green' },
-  MEDIUM: { label: 'Trung bình', color: 'yellow' },
-  HARD: { label: 'Khó', color: 'red' },
+  easy: { label: 'Dễ', color: 'green' },
+  medium: { label: 'Trung bình', color: 'yellow' },
+  hard: { label: 'Khó', color: 'red' },
 }
 
 const skillConfig: Record<IeltsSkill, { label: string; icon: typeof IconBook; color: string }> = {
-  READING: { label: 'Reading', icon: IconBook, color: 'blue' },
-  LISTENING: { label: 'Listening', icon: IconHeadphones, color: 'violet' },
+  reading: { label: 'Reading', icon: IconBook, color: 'blue' },
+  listening: { label: 'Listening', icon: IconHeadphones, color: 'violet' },
 }
 
 const SKILL_TABS = [
   { value: 'all', label: 'Tất cả' },
-  { value: 'READING', label: 'Reading' },
-  { value: 'LISTENING', label: 'Listening' },
-  { value: 'WRITING', label: 'Writing', disabled: true },
-  { value: 'SPEAKING', label: 'Speaking', disabled: true },
+  { value: 'reading', label: 'Reading' },
+  { value: 'listening', label: 'Listening' },
+  { value: 'writing', label: 'Writing', disabled: true },
+  { value: 'speaking', label: 'Speaking', disabled: true },
 ]
 
 // ─── Test Card ───────────────────────────────────────────────────────────────
