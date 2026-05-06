@@ -22,7 +22,9 @@ import {
   IconRefresh,
   IconRotate,
   IconTrophy,
+  IconVolume,
 } from '@tabler/icons-react'
+import { useAudio } from '@/utils/hooks/useAudio'
 import { useNavigate, useParams } from 'react-router-dom'
 import { VocabularyService } from '@/services/vocabulary/vocabulary.service'
 import type { VocabSetDetail, VocabWord, WordLevel, WordStatus } from '@/@types/vocabulary'
@@ -43,6 +45,26 @@ const statusConfig: Record<WordStatus, { label: string; color: string }> = {
 const posLabel: Record<string, string> = {
   noun: 'danh từ', verb: 'động từ', adjective: 'tính từ',
   adverb: 'trạng từ', preposition: 'giới từ', phrase: 'cụm từ',
+}
+
+// ─── Pronounce Button ─────────────────────────────────────────────────────────
+
+function PronounceButton({ word, audioUrl }: { word: string; audioUrl?: string | null }) {
+  const audio = useAudio({ word, audioUrl })
+  return (
+    <ActionIcon
+      variant="subtle"
+      color={audio.playing ? 'teal' : 'blue'}
+      size="sm"
+      onClick={(e) => {
+        e.stopPropagation()
+        audio.play()
+      }}
+      title="Nghe phat am"
+    >
+      <IconVolume size={16} />
+    </ActionIcon>
+  )
 }
 
 // ─── Word List Tab ────────────────────────────────────────────────────────────
@@ -69,7 +91,10 @@ function WordListTab({ words }: { words: VocabWord[] }) {
               <Table.Tr key={w.id}>
                 <Table.Td c="dimmed">{idx + 1}</Table.Td>
                 <Table.Td>
-                  <Text fw={700} size="sm">{w.word}</Text>
+                  <Group gap={4}>
+                    <Text fw={700} size="sm">{w.word}</Text>
+                    <PronounceButton word={w.word} audioUrl={w.audioUrl} />
+                  </Group>
                 </Table.Td>
                 <Table.Td>
                   <Text size="sm" c="dimmed" ff="monospace">{w.phonetic}</Text>
@@ -209,9 +234,12 @@ function FlashcardTab({ words, setId }: { words: VocabWord[]; setId: string }) {
             <Text size="2rem" fw={800} ta="center" lh={1.2}>
               {word.word}
             </Text>
-            <Text size="md" c="dimmed" mt={8} ff="monospace">
-              {word.phonetic}
-            </Text>
+            <Group gap={4} mt={8} justify="center">
+              <Text size="md" c="dimmed" ff="monospace">
+                {word.phonetic}
+              </Text>
+              <PronounceButton word={word.word} audioUrl={word.audioUrl} />
+            </Group>
             <Text size="xs" c="blue.4" mt={4}>
               {posLabel[word.partOfSpeech] ?? word.partOfSpeech}
             </Text>

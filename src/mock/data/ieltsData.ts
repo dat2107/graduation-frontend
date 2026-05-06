@@ -60,7 +60,7 @@ export const ieltsTestList: IeltsTest[] = [
     questionCount: 8,
     durationMinutes: 10,
     difficulty: 'easy',
-    audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
+    audioUrl: null, // teacher can upload real audio via MinIO
     completedCount: 0,
     bestScore: null,
   },
@@ -73,7 +73,7 @@ export const ieltsTestList: IeltsTest[] = [
     questionCount: 10,
     durationMinutes: 15,
     difficulty: 'medium',
-    audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
+    audioUrl: null, // teacher can upload real audio via MinIO
     completedCount: 0,
     bestScore: null,
   },
@@ -86,7 +86,7 @@ export const ieltsTestList: IeltsTest[] = [
     questionCount: 10,
     durationMinutes: 20,
     difficulty: 'hard',
-    audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3',
+    audioUrl: null, // teacher can upload real audio via MinIO
     completedCount: 0,
     bestScore: null,
   },

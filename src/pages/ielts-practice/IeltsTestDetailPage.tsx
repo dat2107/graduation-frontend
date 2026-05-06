@@ -77,8 +77,28 @@ function AudioPlayer({ url }: { url: string }) {
   const audioRef = useRef<HTMLAudioElement>(null)
   const [playing, setPlaying] = useState(false)
   const [progress, setProgress] = useState(0)
+  const [useTTS, setUseTTS] = useState(false)
+
+  useEffect(() => {
+    if (!url || url.includes('example.com') || url.includes('soundhelix.com')) {
+      setUseTTS(true)
+    }
+  }, [url])
+
+  useEffect(() => {
+    const audio = audioRef.current
+    if (!audio || useTTS) return
+    const onError = () => setUseTTS(true)
+    audio.addEventListener('error', onError)
+    return () => audio.removeEventListener('error', onError)
+  }, [useTTS])
 
   const toggle = () => {
+    if (useTTS) {
+      // TTS not applicable for IELTS listening without transcript at this level
+      // The test questions are self-contained, so we just show a message
+      return
+    }
     if (!audioRef.current) return
     if (playing) {
       audioRef.current.pause()
@@ -92,6 +112,26 @@ function AudioPlayer({ url }: { url: string }) {
     if (!audioRef.current) return
     const pct = (audioRef.current.currentTime / audioRef.current.duration) * 100
     setProgress(isNaN(pct) ? 0 : pct)
+  }
+
+  if (useTTS) {
+    return (
+      <Paper withBorder radius="md" p="md" bg="violet.0">
+        <Group gap="sm">
+          <ActionIcon size="lg" radius="xl" color="gray" variant="light" disabled>
+            <IconHeadphones size={18} />
+          </ActionIcon>
+          <Stack gap={4} style={{ flex: 1 }}>
+            <Text size="xs" fw={500} c="violet">
+              Audio chua san sang
+            </Text>
+            <Text size="xs" c="dimmed">
+              Giao vien chua upload audio cho bai nay. Ban co the lam bai dua tren cau hoi.
+            </Text>
+          </Stack>
+        </Group>
+      </Paper>
+    )
   }
 
   return (
@@ -109,7 +149,7 @@ function AudioPlayer({ url }: { url: string }) {
         <Stack gap={4} style={{ flex: 1 }}>
           <Group gap={4}>
             <IconHeadphones size={14} color="var(--mantine-color-violet-6)" />
-            <Text size="xs" fw={500} c="violet">Audio bài nghe</Text>
+            <Text size="xs" fw={500} c="violet">Audio bai nghe</Text>
           </Group>
           <Progress value={progress} size="sm" radius="xl" color="violet" />
         </Stack>

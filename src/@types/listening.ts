@@ -42,7 +42,7 @@ export interface ListeningLessonDetail {
   id: number
   title: string
   description: string
-  audioUrl: string
+  audioUrl: string | null
   transcript: string
   durationSeconds: number | null
   level: WordLevel

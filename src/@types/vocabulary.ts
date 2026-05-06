@@ -11,6 +11,7 @@ export interface VocabWord {
   partOfSpeech: PartOfSpeech
   meaning: string
   example: string
+  audioUrl: string | null
   level: WordLevel
   status: WordStatus
 }

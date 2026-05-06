@@ -44,15 +44,19 @@ import type {
 
 function AudioPlayer({
   audioUrl,
+  transcript,
   durationSeconds,
 }: {
-  audioUrl: string
+  audioUrl: string | null
+  transcript?: string
   durationSeconds: number | null
 }) {
   const audioRef = useRef<HTMLAudioElement>(null)
   const [playing, setPlaying] = useState(false)
   const [currentTime, setCurrentTime] = useState(0)
   const [duration, setDuration] = useState(durationSeconds ?? 0)
+  const [useTTS, setUseTTS] = useState(false)
+  const [audioError, setAudioError] = useState(false)
 
   useEffect(() => {
     const audio = audioRef.current
@@ -65,19 +69,53 @@ function AudioPlayer({
       }
     }
     const onEnded = () => setPlaying(false)
+    const onError = () => {
+      setAudioError(true)
+      if (transcript) setUseTTS(true)
+    }
 
     audio.addEventListener('timeupdate', onTimeUpdate)
     audio.addEventListener('loadedmetadata', onLoadedMetadata)
     audio.addEventListener('ended', onEnded)
+    audio.addEventListener('error', onError)
 
     return () => {
       audio.removeEventListener('timeupdate', onTimeUpdate)
       audio.removeEventListener('loadedmetadata', onLoadedMetadata)
       audio.removeEventListener('ended', onEnded)
+      audio.removeEventListener('error', onError)
     }
-  }, [])
+  }, [transcript])
+
+  // If no valid audioUrl, switch to TTS mode immediately
+  useEffect(() => {
+    if (!audioUrl || audioUrl.includes('example.com')) {
+      setAudioError(true)
+      if (transcript) setUseTTS(true)
+    }
+  }, [audioUrl, transcript])
 
   const togglePlay = () => {
+    if (useTTS && transcript) {
+      if (playing) {
+        window.speechSynthesis.cancel()
+        setPlaying(false)
+      } else {
+        const utterance = new SpeechSynthesisUtterance(transcript)
+        utterance.lang = 'en-US'
+        utterance.rate = 0.9
+        const voices = window.speechSynthesis.getVoices()
+        const voice = voices.find((v) => v.lang.startsWith('en') && !v.localService)
+          ?? voices.find((v) => v.lang.startsWith('en'))
+        if (voice) utterance.voice = voice
+        utterance.onend = () => setPlaying(false)
+        utterance.onerror = () => setPlaying(false)
+        setPlaying(true)
+        window.speechSynthesis.speak(utterance)
+      }
+      return
+    }
+
     const audio = audioRef.current
     if (!audio) return
     if (playing) {
@@ -89,6 +127,7 @@ function AudioPlayer({
   }
 
   const handleSliderChange = (value: number) => {
+    if (useTTS) return
     const audio = audioRef.current
     if (!audio) return
     audio.currentTime = value
@@ -103,37 +142,50 @@ function AudioPlayer({
 
   return (
     <Card withBorder radius="md" p="md">
-      <audio ref={audioRef} src={audioUrl} preload="metadata" />
+      {!useTTS && <audio ref={audioRef} src={audioUrl ?? undefined} preload="metadata" />}
       <Group gap="md">
         <ActionIcon
           size="xl"
           radius="xl"
-          color="blue"
+          color={useTTS ? 'teal' : 'blue'}
           variant="filled"
           onClick={togglePlay}
         >
           {playing ? <IconPlayerPause size={20} /> : <IconPlayerPlay size={20} />}
         </ActionIcon>
         <Stack gap={4} style={{ flex: 1 }}>
-          <Slider
-            value={currentTime}
-            onChange={handleSliderChange}
-            min={0}
-            max={duration || 1}
-            step={0.1}
-            label={null}
-            size="sm"
-          />
-          <Group justify="space-between">
-            <Text size="xs" c="dimmed">
-              {formatTime(currentTime)}
+          {useTTS ? (
+            <Text size="sm" c="teal" fw={500}>
+              {playing ? 'Dang doc...' : 'Nhan Play de nghe (Text-to-Speech)'}
             </Text>
-            <Text size="xs" c="dimmed">
-              {formatTime(duration)}
-            </Text>
-          </Group>
+          ) : (
+            <>
+              <Slider
+                value={currentTime}
+                onChange={handleSliderChange}
+                min={0}
+                max={duration || 1}
+                step={0.1}
+                label={null}
+                size="sm"
+              />
+              <Group justify="space-between">
+                <Text size="xs" c="dimmed">
+                  {formatTime(currentTime)}
+                </Text>
+                <Text size="xs" c="dimmed">
+                  {formatTime(duration)}
+                </Text>
+              </Group>
+            </>
+          )}
         </Stack>
       </Group>
+      {useTTS && audioError && (
+        <Text size="xs" c="dimmed" mt="xs">
+          Audio file khong kha dung. Su dung Text-to-Speech.
+        </Text>
+      )}
     </Card>
   )
 }
@@ -444,6 +496,7 @@ export default function ListeningLessonDetailPage() {
               {/* Audio player */}
               <AudioPlayer
                 audioUrl={lesson.audioUrl}
+                transcript={lesson.transcript}
                 durationSeconds={lesson.durationSeconds}
               />
 
