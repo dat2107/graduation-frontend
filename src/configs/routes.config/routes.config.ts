@@ -59,6 +59,14 @@ export const protectedRoutes = [
     authority: ['STUDENT', 'TEACHER', 'ADMIN'],
   },
   // ── Vocabulary ───────────────────────────────────────────────────────────────
+  // ── AI Chat ─────────────────────────────────────────────────────────────────
+  {
+    key: 'ai-chat',
+    path: '/ai-chat',
+    component: lazy(() => import('@/pages/ai-chat/AiChatPage')),
+    authority: ['STUDENT', 'TEACHER', 'ADMIN'],
+  },
+  // ── Vocabulary ───────────────────────────────────────────────────────────────
   {
     key: 'vocabulary',
     path: '/vocabulary',

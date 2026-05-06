@@ -73,8 +73,7 @@ const navigationConfig: NavigationTree[] = [
     icon: IconMessageChatbot,
     authority: ['STUDENT', 'TEACHER', 'ADMIN'],
     subMenu: [],
-    disabled: true,
-  } as any,
+  },
 ]
 
 export default navigationConfig
