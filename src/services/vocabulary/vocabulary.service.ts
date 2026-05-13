@@ -14,6 +14,38 @@ import type {
   VocabWordManage,
 } from '@/@types/vocabulary'
 
+type DictionaryApiDefinition = {
+  definition?: string
+  example?: string
+}
+
+type DictionaryApiMeaning = {
+  partOfSpeech?: string
+  definitions?: DictionaryApiDefinition[]
+}
+
+type DictionaryApiPhonetic = {
+  text?: string
+  audio?: string
+}
+
+type DictionaryApiEntry = {
+  phonetic?: string
+  phonetics?: DictionaryApiPhonetic[]
+  meanings?: DictionaryApiMeaning[]
+}
+
+const SUPPORTED_PARTS_OF_SPEECH = new Set(['noun', 'verb', 'adjective', 'adverb', 'preposition', 'phrase'])
+
+const toSupportedPartOfSpeech = (value?: string): CreateVocabWordRequest['partOfSpeech'] => {
+  if (!value) return undefined
+
+  const normalized = value.toLowerCase()
+  return SUPPORTED_PARTS_OF_SPEECH.has(normalized)
+    ? normalized as CreateVocabWordRequest['partOfSpeech']
+    : undefined
+}
+
 export const VocabularyService = {
   /** GET /api/vocabulary/sets — danh sách bộ từ vựng */
   async getSets(level?: string) {
@@ -55,12 +87,56 @@ export const VocabularyService = {
 
   // ─── Teacher Management ──────────────────────────────────────────────────
 
+  /** GET dictionaryapi.dev - lookup public English dictionary data */
+  async lookupDictionaryWord(word: string): Promise<Partial<CreateVocabWordRequest>> {
+    const normalizedWord = word.trim().toLowerCase()
+    const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(normalizedWord)}`)
+
+    if (!res.ok) {
+      throw new Error('Dictionary lookup failed')
+    }
+
+    const entries = (await res.json()) as DictionaryApiEntry[]
+    const entry = entries[0]
+    const meaning = entry?.meanings?.[0]
+
+    return {
+      phonetic: entry?.phonetics?.find((item) => item.text)?.text || entry?.phonetic || '',
+      partOfSpeech: toSupportedPartOfSpeech(meaning?.partOfSpeech),
+      meaning: meaning?.definitions?.find((item) => item.definition)?.definition || '',
+      example: meaning?.definitions?.find((item) => item.example)?.example || '',
+      audioUrl: entry?.phonetics?.find((item) => item.audio)?.audio || '',
+    }
+  },
+
   /** GET /api/vocabulary/manage/topics */
   async getTopicsForManage(params: { page?: number; size?: number; search?: string; level?: string }) {
     const res = await ApiService.fetchData<null, BaseResponse<PageResponse<VocabTopicManage>>>({
       url: '/api/vocabulary/manage/topics',
       method: 'GET',
       params,
+    })
+    return res.data
+  },
+
+  /** GET /api/vocabulary/manage/topics/:id */
+  async getTopicForManage(id: number) {
+    const res = await ApiService.fetchData<null, BaseResponse<VocabTopicManage>>({
+      url: `/api/vocabulary/manage/topics/${id}`,
+      method: 'GET',
+    })
+    return res.data
+  },
+
+  /** POST /api/vocabulary/manage/words/upload-image */
+  async uploadWordImage(file: File) {
+    const formData = new FormData()
+    formData.append('file', file)
+
+    const res = await ApiService.fetchData<FormData, BaseResponse<string>>({
+      url: '/api/vocabulary/manage/words/upload-image',
+      method: 'POST',
+      data: formData,
     })
     return res.data
   },

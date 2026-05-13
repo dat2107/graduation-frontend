@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   ActionIcon,
   Badge,
@@ -16,8 +16,8 @@ import {
   TextInput,
   Title,
   Tooltip,
-} from '@mantine/core'
-import { useDisclosure } from '@mantine/hooks'
+} from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
 import {
   IconDotsVertical,
   IconEdit,
@@ -25,14 +25,14 @@ import {
   IconPlus,
   IconSend,
   IconTrash,
-} from '@tabler/icons-react'
-import { ChatService } from '@/services/chat/chat.service'
+} from '@tabler/icons-react';
+import { ChatService } from '@/services/chat/chat.service';
 import type {
   ChatConversation,
   ChatMessage,
   EnglishLevel,
-} from '@/@types/chat'
-import styles from './AiChatPage.module.css'
+} from '@/@types/chat';
+import styles from './AiChatPage.module.css';
 
 const LEVEL_OPTIONS = [
   { value: 'A1', label: 'A1 - Beginner' },
@@ -41,7 +41,7 @@ const LEVEL_OPTIONS = [
   { value: 'B2', label: 'B2 - Upper Intermediate' },
   { value: 'C1', label: 'C1 - Advanced' },
   { value: 'C2', label: 'C2 - Proficiency' },
-]
+];
 
 const levelColorMap: Record<string, string> = {
   A1: 'green',
@@ -50,78 +50,80 @@ const levelColorMap: Record<string, string> = {
   B2: 'indigo',
   C1: 'violet',
   C2: 'grape',
-}
+};
 
 export default function AiChatPage() {
   // ── State ────────────────────────────────────────────────────────────────────
-  const [conversations, setConversations] = useState<ChatConversation[]>([])
-  const [activeConvId, setActiveConvId] = useState<number | null>(null)
-  const [messages, setMessages] = useState<ChatMessage[]>([])
-  const [input, setInput] = useState('')
-  const [streaming, setStreaming] = useState(false)
-  const [loadingConversations, setLoadingConversations] = useState(true)
-  const [loadingMessages, setLoadingMessages] = useState(false)
+  const [conversations, setConversations] = useState<ChatConversation[]>([]);
+  const [activeConvId, setActiveConvId] = useState<number | null>(null);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [input, setInput] = useState('');
+  const [streaming, setStreaming] = useState(false);
+  const [loadingConversations, setLoadingConversations] = useState(true);
+  const [loadingMessages, setLoadingMessages] = useState(false);
 
   // New conversation modal
-  const [newConvOpened, { open: openNewConv, close: closeNewConv }] = useDisclosure(false)
-  const [newLevel, setNewLevel] = useState<EnglishLevel>('B1')
-  const [newTitle, setNewTitle] = useState('')
+  const [newConvOpened, { open: openNewConv, close: closeNewConv }] =
+    useDisclosure(false);
+  const [newLevel, setNewLevel] = useState<EnglishLevel>('B1');
+  const [newTitle, setNewTitle] = useState('');
 
   // Rename modal
-  const [renameOpened, { open: openRename, close: closeRename }] = useDisclosure(false)
-  const [renameTitle, setRenameTitle] = useState('')
-  const [renameConvId, setRenameConvId] = useState<number | null>(null)
+  const [renameOpened, { open: openRename, close: closeRename }] =
+    useDisclosure(false);
+  const [renameTitle, setRenameTitle] = useState('');
+  const [renameConvId, setRenameConvId] = useState<number | null>(null);
 
-  const messagesEndRef = useRef<HTMLDivElement>(null)
-  const abortRef = useRef<AbortController | null>(null)
-  const streamingContentRef = useRef('')
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const abortRef = useRef<AbortController | null>(null);
+  const streamingContentRef = useRef('');
 
   // ── Load conversations ───────────────────────────────────────────────────────
   const loadConversations = useCallback(async () => {
-    setLoadingConversations(true)
+    setLoadingConversations(true);
     try {
-      const res = await ChatService.getConversations()
+      const res = await ChatService.getConversations();
       if (res?.status === 200 && res.data) {
-        setConversations(res.data)
+        setConversations(res.data);
       }
     } catch {
       // silent
     } finally {
-      setLoadingConversations(false)
+      setLoadingConversations(false);
     }
-  }, [])
+  }, []);
 
   useEffect(() => {
-    loadConversations()
-  }, [loadConversations])
+    loadConversations();
+  }, [loadConversations]);
 
   // ── Load messages for active conversation ────────────────────────────────────
   useEffect(() => {
     if (!activeConvId) {
-      setMessages([])
-      return
+      setMessages([]);
+      return;
     }
 
     const loadMessages = async () => {
-      setLoadingMessages(true)
+      setLoadingMessages(true);
       try {
-        const res = await ChatService.getMessages(activeConvId)
+        const res = await ChatService.getMessages(activeConvId);
         if (res?.status === 200 && res.data) {
-          setMessages(res.data.messages)
+          setMessages(res.data.messages);
         }
       } catch {
         // silent
       } finally {
-        setLoadingMessages(false)
+        setLoadingMessages(false);
       }
-    }
-    loadMessages()
-  }, [activeConvId])
+    };
+    loadMessages();
+  }, [activeConvId]);
 
   // ── Auto-scroll to bottom ────────────────────────────────────────────────────
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [messages])
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
 
   // ── Create conversation ──────────────────────────────────────────────────────
   const handleCreateConversation = async () => {
@@ -129,58 +131,60 @@ export default function AiChatPage() {
       const res = await ChatService.createConversation({
         title: newTitle.trim() || undefined,
         englishLevel: newLevel,
-      })
+      });
       if (res?.status === 200 && res.data) {
-        setConversations((prev) => [res.data, ...prev])
-        setActiveConvId(res.data.id)
-        setMessages([])
+        setConversations((prev) => [res.data, ...prev]);
+        setActiveConvId(res.data.id);
+        setMessages([]);
       }
     } catch {
       // silent
     }
-    closeNewConv()
-    setNewTitle('')
-    setNewLevel('B1')
-  }
+    closeNewConv();
+    setNewTitle('');
+    setNewLevel('B1');
+  };
 
   // ── Delete conversation ──────────────────────────────────────────────────────
   const handleDelete = async (convId: number) => {
     try {
-      await ChatService.deleteConversation(convId)
-      setConversations((prev) => prev.filter((c) => c.id !== convId))
+      await ChatService.deleteConversation(convId);
+      setConversations((prev) => prev.filter((c) => c.id !== convId));
       if (activeConvId === convId) {
-        setActiveConvId(null)
-        setMessages([])
+        setActiveConvId(null);
+        setMessages([]);
       }
     } catch {
       // silent
     }
-  }
+  };
 
   // ── Rename conversation ──────────────────────────────────────────────────────
   const handleRename = async () => {
-    if (!renameConvId || !renameTitle.trim()) return
+    if (!renameConvId || !renameTitle.trim()) return;
     try {
       const res = await ChatService.updateConversation(renameConvId, {
         title: renameTitle.trim(),
-      })
+      });
       if (res?.status === 200 && res.data) {
         setConversations((prev) =>
-          prev.map((c) => (c.id === renameConvId ? { ...c, title: res.data.title } : c)),
-        )
+          prev.map((c) =>
+            c.id === renameConvId ? { ...c, title: res.data.title } : c
+          )
+        );
       }
     } catch {
       // silent
     }
-    closeRename()
-  }
+    closeRename();
+  };
 
   // ── Send message (SSE stream) ────────────────────────────────────────────────
   const handleSend = () => {
-    if (!input.trim() || !activeConvId || streaming) return
+    if (!input.trim() || !activeConvId || streaming) return;
 
-    const userContent = input.trim()
-    setInput('')
+    const userContent = input.trim();
+    setInput('');
 
     // Optimistic: add user message immediately
     const tempUserMsg: ChatMessage = {
@@ -188,8 +192,8 @@ export default function AiChatPage() {
       role: 'USER',
       content: userContent,
       createdAt: new Date().toISOString(),
-    }
-    setMessages((prev) => [...prev, tempUserMsg])
+    };
+    setMessages((prev) => [...prev, tempUserMsg]);
 
     // Add empty assistant message placeholder
     const tempAssistantMsg: ChatMessage = {
@@ -197,70 +201,74 @@ export default function AiChatPage() {
       role: 'ASSISTANT',
       content: '',
       createdAt: new Date().toISOString(),
-    }
-    setMessages((prev) => [...prev, tempAssistantMsg])
+    };
+    setMessages((prev) => [...prev, tempAssistantMsg]);
 
-    setStreaming(true)
-    streamingContentRef.current = ''
+    setStreaming(true);
+    streamingContentRef.current = '';
 
     const controller = ChatService.sendMessageStream(
       activeConvId,
       userContent,
       // onToken
       (token) => {
-        streamingContentRef.current += token
+        streamingContentRef.current += token;
         setMessages((prev) => {
-          const updated = [...prev]
-          const last = updated[updated.length - 1]
+          const updated = [...prev];
+          const last = updated[updated.length - 1];
           if (last && last.role === 'ASSISTANT') {
             updated[updated.length - 1] = {
               ...last,
               content: streamingContentRef.current,
-            }
+            };
           }
-          return updated
-        })
+          return updated;
+        });
       },
       // onDone
       () => {
-        setStreaming(false)
+        setStreaming(false);
         // Update conversation message count
         setConversations((prev) =>
           prev.map((c) =>
             c.id === activeConvId
-              ? { ...c, messageCount: c.messageCount + 2, updatedAt: new Date().toISOString() }
-              : c,
-          ),
-        )
+              ? {
+                  ...c,
+                  messageCount: c.messageCount + 2,
+                  updatedAt: new Date().toISOString(),
+                }
+              : c
+          )
+        );
       },
       // onError
       (error) => {
-        setStreaming(false)
+        setStreaming(false);
         setMessages((prev) => {
-          const updated = [...prev]
-          const last = updated[updated.length - 1]
+          const updated = [...prev];
+          const last = updated[updated.length - 1];
           if (last && last.role === 'ASSISTANT' && !last.content) {
             updated[updated.length - 1] = {
               ...last,
               content: `Error: ${error}`,
-            }
+            };
           }
-          return updated
-        })
-      },
-    )
+          return updated;
+        });
+      }
+    );
 
-    abortRef.current = controller
-  }
+    abortRef.current = controller;
+  };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault()
-      handleSend()
+      e.preventDefault();
+      handleSend();
     }
-  }
+  };
 
-  const activeConv = conversations.find((c) => c.id === activeConvId)
+  const activeConv = conversations.find((c) => c.id === activeConvId);
 
   // ── Render ───────────────────────────────────────────────────────────────────
   return (
@@ -331,10 +339,10 @@ export default function AiChatPage() {
                     <Menu.Item
                       leftSection={<IconEdit size={14} />}
                       onClick={(e) => {
-                        e.stopPropagation()
-                        setRenameConvId(conv.id)
-                        setRenameTitle(conv.title)
-                        openRename()
+                        e.stopPropagation();
+                        setRenameConvId(conv.id);
+                        setRenameTitle(conv.title);
+                        openRename();
                       }}
                     >
                       Đổi tên
@@ -343,8 +351,8 @@ export default function AiChatPage() {
                       leftSection={<IconTrash size={14} />}
                       color="red"
                       onClick={(e) => {
-                        e.stopPropagation()
-                        handleDelete(conv.id)
+                        e.stopPropagation();
+                        handleDelete(conv.id);
                       }}
                     >
                       Xóa
@@ -514,5 +522,5 @@ export default function AiChatPage() {
         </Stack>
       </Modal>
     </div>
-  )
+  );
 }

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   Badge,
   Box,
@@ -16,12 +16,18 @@ import {
   Textarea,
   TextInput,
   Title,
-} from '@mantine/core'
-import { IconPencilCheck, IconSend, IconHistory, IconArrowRight, IconAlertTriangle } from '@tabler/icons-react'
-import { WritingService } from '@/services/writing/writing.service'
-import type { WritingSubmission, QuickCheckResponse } from '@/@types/writing'
-import type { EnglishLevel } from '@/@types/chat'
-import styles from './WritingCheckPage.module.css'
+} from '@mantine/core';
+import {
+  IconPencilCheck,
+  IconSend,
+  IconHistory,
+  IconArrowRight,
+  IconAlertTriangle,
+} from '@tabler/icons-react';
+import { WritingService } from '@/services/writing/writing.service';
+import type { WritingSubmission, QuickCheckResponse } from '@/@types/writing';
+import type { EnglishLevel } from '@/@types/chat';
+import styles from './WritingCheckPage.module.css';
 
 const LEVEL_OPTIONS = [
   { value: 'A1', label: 'A1 - Beginner' },
@@ -30,129 +36,131 @@ const LEVEL_OPTIONS = [
   { value: 'B2', label: 'B2 - Upper Intermediate' },
   { value: 'C1', label: 'C1 - Advanced' },
   { value: 'C2', label: 'C2 - Proficiency' },
-]
+];
 
 function getScoreColor(score: number | null): string {
-  if (score === null) return 'gray'
-  if (score >= 80) return 'green'
-  if (score >= 60) return 'blue'
-  if (score >= 40) return 'yellow'
-  return 'red'
+  if (score === null) return 'gray';
+  if (score >= 80) return 'green';
+  if (score >= 60) return 'blue';
+  if (score >= 40) return 'yellow';
+  return 'red';
 }
 
 export default function WritingCheckPage() {
   // ── Form state ─────────────────────────────────────────────────────────────────
-  const [title, setTitle] = useState('')
-  const [content, setContent] = useState('')
-  const [level, setLevel] = useState<EnglishLevel>('B1')
-  const [submitting, setSubmitting] = useState(false)
+  const [title, setTitle] = useState('');
+  const [content, setContent] = useState('');
+  const [level, setLevel] = useState<EnglishLevel>('B1');
+  const [submitting, setSubmitting] = useState(false);
 
   // ── Quick check (realtime) ───────────────────────────────────────────────────
-  const [quickCheck, setQuickCheck] = useState<QuickCheckResponse | null>(null)
-  const [checking, setChecking] = useState(false)
-  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const lastCheckedRef = useRef('')
+  const [quickCheck, setQuickCheck] = useState<QuickCheckResponse | null>(null);
+  const [checking, setChecking] = useState(false);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const lastCheckedRef = useRef('');
 
   // ── Result state ───────────────────────────────────────────────────────────────
-  const [activeSubmission, setActiveSubmission] = useState<WritingSubmission | null>(null)
-  const [history, setHistory] = useState<WritingSubmission[]>([])
-  const [loadingHistory, setLoadingHistory] = useState(true)
+  const [activeSubmission, setActiveSubmission] =
+    useState<WritingSubmission | null>(null);
+  const [history, setHistory] = useState<WritingSubmission[]>([]);
+  const [loadingHistory, setLoadingHistory] = useState(true);
 
   // ── Debounced quick check ────────────────────────────────────────────────────
   const triggerQuickCheck = useCallback(
     (text: string) => {
-      if (debounceRef.current) clearTimeout(debounceRef.current)
+      if (debounceRef.current) clearTimeout(debounceRef.current);
 
       // Skip if text is too short or unchanged
       if (text.trim().length < 20 || text.trim() === lastCheckedRef.current) {
-        if (text.trim().length < 20) setQuickCheck(null)
-        return
+        if (text.trim().length < 20) setQuickCheck(null);
+        return;
       }
 
       debounceRef.current = setTimeout(async () => {
-        setChecking(true)
+        setChecking(true);
         try {
           const res = await WritingService.quickCheck({
             content: text.trim(),
             englishLevel: level,
-          })
+          });
           if (res?.status === 200 && res.data) {
-            setQuickCheck(res.data)
-            lastCheckedRef.current = text.trim()
+            setQuickCheck(res.data);
+            lastCheckedRef.current = text.trim();
           }
         } catch {
           // silent — don't break typing flow
         } finally {
-          setChecking(false)
+          setChecking(false);
         }
-      }, 2000)
+      }, 2000);
     },
-    [level],
-  )
+    [level]
+  );
 
   const handleContentChange = (value: string) => {
-    setContent(value)
-    triggerQuickCheck(value)
-  }
+    setContent(value);
+    triggerQuickCheck(value);
+  };
 
   // Cleanup debounce on unmount
-  useEffect(() => {
-    return () => {
-      if (debounceRef.current) clearTimeout(debounceRef.current)
-    }
-  }, [])
+  useEffect(
+    () => () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+    },
+    []
+  );
 
   // ── Load history ───────────────────────────────────────────────────────────────
   const loadHistory = useCallback(async () => {
-    setLoadingHistory(true)
+    setLoadingHistory(true);
     try {
-      const res = await WritingService.getHistory()
+      const res = await WritingService.getHistory();
       if (res?.status === 200 && res.data) {
-        setHistory(res.data)
+        setHistory(res.data);
       }
     } catch {
       // silent
     } finally {
-      setLoadingHistory(false)
+      setLoadingHistory(false);
     }
-  }, [])
+  }, []);
 
   useEffect(() => {
-    loadHistory()
-  }, [loadHistory])
+    loadHistory();
+  }, [loadHistory]);
 
   // ── Submit writing ─────────────────────────────────────────────────────────────
   const handleSubmit = async () => {
-    if (!content.trim()) return
-    setSubmitting(true)
+    if (!content.trim()) return;
+    setSubmitting(true);
     try {
       const res = await WritingService.submit({
         title: title.trim() || undefined,
         content: content.trim(),
         englishLevel: level,
-      })
+      });
       if (res?.status === 200 && res.data) {
-        setActiveSubmission(res.data)
-        setHistory((prev) => [res.data, ...prev])
+        setActiveSubmission(res.data);
+        setHistory((prev) => [res.data, ...prev]);
       }
     } catch {
       // error handled by interceptor
     } finally {
-      setSubmitting(false)
+      setSubmitting(false);
     }
-  }
+  };
 
   // ── View history item ──────────────────────────────────────────────────────────
   const handleViewHistory = async (id: number) => {
     try {
-      const res = await WritingService.getSubmission(id)
+      const res = await WritingService.getSubmission(id);
       if (res?.status === 200 && res.data) {
-        setActiveSubmission(res.data)
+        setActiveSubmission(res.data);
       }
     } catch {
       // silent
     }
-  }
+  };
 
   // ── Render ─────────────────────────────────────────────────────────────────────
   return (
@@ -205,7 +213,10 @@ export default function WritingCheckPage() {
               {!checking && quickCheck && quickCheck.errors.length > 0 && (
                 <div className={styles.inlineErrors}>
                   <Group gap={6} mb={8}>
-                    <IconAlertTriangle size={16} color="var(--mantine-color-orange-6)" />
+                    <IconAlertTriangle
+                      size={16}
+                      color="var(--mantine-color-orange-6)"
+                    />
                     <Text size="sm" fw={600} c="orange.7">
                       {quickCheck.errors.length} lỗi phát hiện
                     </Text>
@@ -213,19 +224,35 @@ export default function WritingCheckPage() {
                   {quickCheck.errors.map((err, i) => (
                     <div key={i} className={styles.errorItem}>
                       <Group gap={6} wrap="nowrap" style={{ flex: 1 }}>
-                        <Badge size="xs" variant="light" color={
-                          err.type === 'GRAMMAR' ? 'red' :
-                          err.type === 'SPELLING' ? 'orange' :
-                          err.type === 'VOCABULARY' ? 'blue' : 'gray'
-                        }>
+                        <Badge
+                          size="xs"
+                          variant="light"
+                          color={
+                            err.type === 'GRAMMAR'
+                              ? 'red'
+                              : err.type === 'SPELLING'
+                                ? 'orange'
+                                : err.type === 'VOCABULARY'
+                                  ? 'blue'
+                                  : 'gray'
+                          }
+                        >
                           {err.type}
                         </Badge>
                         <Text size="sm">
-                          <span className={styles.errorOriginal}>{err.original}</span>
-                          {' '}
-                          <IconArrowRight size={12} style={{ display: 'inline', verticalAlign: 'middle' }} />
-                          {' '}
-                          <span className={styles.errorCorrection}>{err.correction}</span>
+                          <span className={styles.errorOriginal}>
+                            {err.original}
+                          </span>{' '}
+                          <IconArrowRight
+                            size={12}
+                            style={{
+                              display: 'inline',
+                              verticalAlign: 'middle',
+                            }}
+                          />{' '}
+                          <span className={styles.errorCorrection}>
+                            {err.correction}
+                          </span>
                         </Text>
                       </Group>
                       <Text size="xs" c="dimmed" style={{ flexShrink: 0 }}>
@@ -241,14 +268,23 @@ export default function WritingCheckPage() {
                 </div>
               )}
 
-              {!checking && quickCheck && quickCheck.errors.length === 0 && content.trim().length >= 20 && (
-                <Text size="sm" c="green.6" fw={500}>
-                  ✓ Không phát hiện lỗi
-                </Text>
-              )}
+              {!checking &&
+                quickCheck &&
+                quickCheck.errors.length === 0 &&
+                content.trim().length >= 20 && (
+                  <Text size="sm" c="green.6" fw={500}>
+                    ✓ Không phát hiện lỗi
+                  </Text>
+                )}
 
               <Button
-                leftSection={submitting ? <Loader size={16} color="white" /> : <IconSend size={16} />}
+                leftSection={
+                  submitting ? (
+                    <Loader size={16} color="white" />
+                  ) : (
+                    <IconSend size={16} />
+                  )
+                }
                 onClick={handleSubmit}
                 disabled={!content.trim() || submitting}
                 loading={submitting}
@@ -263,7 +299,9 @@ export default function WritingCheckPage() {
           <Paper p="md" radius="md" withBorder mt="lg">
             <Group gap="xs" mb="sm">
               <IconHistory size={18} />
-              <Text fw={600} size="sm">Lịch sử bài viết</Text>
+              <Text fw={600} size="sm">
+                Lịch sử bài viết
+              </Text>
             </Group>
 
             {loadingHistory ? (
@@ -280,7 +318,9 @@ export default function WritingCheckPage() {
                   <Group
                     key={item.id}
                     className={`${styles.historyItem} ${
-                      activeSubmission?.id === item.id ? styles.historyItemActive : ''
+                      activeSubmission?.id === item.id
+                        ? styles.historyItemActive
+                        : ''
                     }`}
                     justify="space-between"
                     wrap="nowrap"
@@ -291,9 +331,15 @@ export default function WritingCheckPage() {
                         {item.title || 'Untitled'}
                       </Text>
                       <Group gap={6} mt={2}>
-                        <Badge size="xs" variant="light">{item.englishLevel}</Badge>
+                        <Badge size="xs" variant="light">
+                          {item.englishLevel}
+                        </Badge>
                         {item.overallScore !== null && (
-                          <Badge size="xs" color={getScoreColor(item.overallScore)} variant="light">
+                          <Badge
+                            size="xs"
+                            color={getScoreColor(item.overallScore)}
+                            variant="light"
+                          >
                             {item.overallScore}/100
                           </Badge>
                         )}
@@ -314,8 +360,14 @@ export default function WritingCheckPage() {
           {!activeSubmission ? (
             <Paper p="xl" radius="md" withBorder>
               <Stack align="center" gap="md" py="xl">
-                <IconPencilCheck size={48} stroke={1.2} color="var(--mantine-color-dimmed)" />
-                <Text size="lg" fw={500} c="dimmed">Kết quả đánh giá</Text>
+                <IconPencilCheck
+                  size={48}
+                  stroke={1.2}
+                  color="var(--mantine-color-dimmed)"
+                />
+                <Text size="lg" fw={500} c="dimmed">
+                  Kết quả đánh giá
+                </Text>
                 <Text size="sm" c="dimmed" ta="center">
                   Viết bài tiếng Anh và gửi để AI đánh giá ngữ pháp, từ vựng,
                   tính mạch lạc và khả năng đáp ứng yêu cầu.
@@ -344,7 +396,9 @@ export default function WritingCheckPage() {
                     }
                   />
                   <Box>
-                    <Text fw={700} size="lg">Điểm tổng</Text>
+                    <Text fw={700} size="lg">
+                      Điểm tổng
+                    </Text>
                     <Text size="sm" c="dimmed">
                       {activeSubmission.englishLevel} | {activeSubmission.model}
                     </Text>
@@ -354,19 +408,19 @@ export default function WritingCheckPage() {
 
               {/* Score Breakdown */}
               <SimpleGrid cols={{ base: 2, sm: 4 }}>
-                {([
-                  ['Ngữ pháp', activeSubmission.grammarScore],
-                  ['Từ vựng', activeSubmission.vocabularyScore],
-                  ['Mạch lạc', activeSubmission.coherenceScore],
-                  ['Đáp ứng', activeSubmission.taskResponseScore],
-                ] as [string, number | null][]).map(([label, score]) => (
+                {(
+                  [
+                    ['Ngữ pháp', activeSubmission.grammarScore],
+                    ['Từ vựng', activeSubmission.vocabularyScore],
+                    ['Mạch lạc', activeSubmission.coherenceScore],
+                    ['Đáp ứng', activeSubmission.taskResponseScore],
+                  ] as [string, number | null][]
+                ).map(([label, score]) => (
                   <Card key={label} className={styles.scoreCard} withBorder>
-                    <Text size="xs" c="dimmed" mb={4}>{label}</Text>
-                    <Text
-                      size="xl"
-                      fw={700}
-                      c={getScoreColor(score)}
-                    >
+                    <Text size="xs" c="dimmed" mb={4}>
+                      {label}
+                    </Text>
+                    <Text size="xl" fw={700} c={getScoreColor(score)}>
                       {score ?? '—'}
                     </Text>
                   </Card>
@@ -376,7 +430,9 @@ export default function WritingCheckPage() {
               {/* Feedback */}
               {activeSubmission.feedback && (
                 <Paper p="lg" radius="md" withBorder>
-                  <Text fw={600} mb="sm">Nhận xét chi tiết</Text>
+                  <Text fw={600} mb="sm">
+                    Nhận xét chi tiết
+                  </Text>
                   <Divider mb="sm" />
                   <div className={styles.feedbackText}>
                     {activeSubmission.feedback}
@@ -387,7 +443,9 @@ export default function WritingCheckPage() {
               {/* Corrected Text */}
               {activeSubmission.correctedText && (
                 <Paper p="lg" radius="md" withBorder>
-                  <Text fw={600} mb="sm">Bài viết đã sửa</Text>
+                  <Text fw={600} mb="sm">
+                    Bài viết đã sửa
+                  </Text>
                   <Divider mb="sm" />
                   <div className={styles.correctedText}>
                     {activeSubmission.correctedText}
@@ -399,5 +457,5 @@ export default function WritingCheckPage() {
         </div>
       </div>
     </Box>
-  )
+  );
 }
