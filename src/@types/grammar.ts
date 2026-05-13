@@ -71,3 +71,59 @@ export interface GrammarProgress {
   averageScore: number
   totalExercisesDone: number
 }
+
+// ─── Teacher Management Types ────────────────────────────────────────────────
+
+export interface GrammarTopicManage {
+  id: number
+  name: string
+  description: string
+  level: WordLevel
+  emoji: string
+  active: boolean
+  lessonCount: number
+  createdAt: string
+}
+
+export interface GrammarLessonManage {
+  id: number
+  title: string
+  summary: string
+  level: WordLevel
+  orderIndex: number
+  exerciseCount: number
+  active: boolean
+  createdAt: string
+}
+
+export interface CreateGrammarTopicRequest {
+  name: string
+  description?: string
+  level: WordLevel
+  emoji?: string
+}
+
+export interface UpdateGrammarTopicRequest {
+  name?: string
+  description?: string
+  level?: WordLevel
+  emoji?: string
+  active?: boolean
+}
+
+export interface CreateGrammarLessonRequest {
+  title: string
+  summary?: string
+  content?: string
+  level: WordLevel
+  orderIndex?: number
+}
+
+export interface UpdateGrammarLessonRequest {
+  title?: string
+  summary?: string
+  content?: string
+  level?: WordLevel
+  orderIndex?: number
+  active?: boolean
+}

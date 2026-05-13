@@ -11,6 +11,7 @@ export interface UserInfoState {
   role: string;
   googleLogin?: boolean;
   notificationCount?: number;
+  avatarUrl?: string;
 }
 
 const initialState: UserInfoState = {
@@ -23,6 +24,7 @@ const initialState: UserInfoState = {
   role: '',
   googleLogin: false,
   notificationCount: 0,
+  avatarUrl: '',
 };
 
 const userInfoSlice = createSlice({
@@ -39,6 +41,10 @@ const userInfoSlice = createSlice({
       state.googleLogin = action.payload.googleLogin;
       state.notificationCount = action.payload?.notificationCount;
       state.isTwoFaEnabled = action.payload?.isTwoFaEnabled;
+      state.avatarUrl = action.payload?.avatarUrl;
+    },
+    setAvatarUrl(state, action: PayloadAction<string>) {
+      state.avatarUrl = action.payload;
     },
     setLanguage(state, action) {
       state.language = action.payload?.language;
@@ -73,5 +79,6 @@ export const {
   setTwoFactorAuth,
   setUserInfoRole,
   setNotificationCount,
+  setAvatarUrl,
 } = userInfoSlice.actions;
 export default userInfoSlice.reducer;

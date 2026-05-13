@@ -1,8 +1,12 @@
 import ApiService from '@/services/ApiService'
 import type {
+  AdminUserRes,
   BaseResponse,
+  CreateTeacherRequest,
+  PageResponse,
   UpdateActiveUserRequest,
   UpdateActiveUserResponse,
+  UpdateAvatarRequest,
   UpdateUserInfoRequest,
   UpdateUserRoleRequest,
   UserDTO,
@@ -48,6 +52,36 @@ const UserService = {
       data,
     })
     return res.data // BaseResponse<null>
+  },
+
+  /** GET /api/users — Admin: list all users (paginated) */
+  async getAllUsers(params: { page?: number; size?: number; search?: string; role?: string }) {
+    const res = await ApiService.fetchData<null, BaseResponse<PageResponse<AdminUserRes>>>({
+      url: '/api/users',
+      method: 'GET',
+      params,
+    })
+    return res.data // BaseResponse<PageResponse<AdminUserRes>>
+  },
+
+  /** POST /api/users/create-teacher — Admin: create teacher account */
+  async createTeacher(data: CreateTeacherRequest) {
+    const res = await ApiService.fetchData<CreateTeacherRequest, BaseResponse<AdminUserRes>>({
+      url: '/api/users/create-teacher',
+      method: 'POST',
+      data,
+    })
+    return res.data // BaseResponse<AdminUserRes>
+  },
+
+  /** PUT /api/users/update-avatar */
+  async updateAvatar(data: UpdateAvatarRequest) {
+    const res = await ApiService.fetchData<UpdateAvatarRequest, BaseResponse<UserDTO>>({
+      url: '/api/users/update-avatar',
+      method: 'PUT',
+      data,
+    })
+    return res.data // BaseResponse<UserDTO>
   },
 }
 

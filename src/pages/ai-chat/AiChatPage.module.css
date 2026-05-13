@@ -4,6 +4,11 @@
   overflow: hidden;
 }
 
+/* When rendered inside a modal, fill the modal body instead of viewport */
+:global(.mantine-Modal-body) .chatLayout {
+  height: 100%;
+}
+
 .sidebar {
   width: 280px;
   min-width: 280px;
@@ -131,6 +136,18 @@
 
 @media (max-width: 768px) {
   .sidebar {
+    display: none;
+  }
+}
+
+/* Narrower sidebar when inside modal */
+:global(.mantine-Modal-body) .sidebar {
+  width: 220px;
+  min-width: 220px;
+}
+
+@media (max-width: 900px) {
+  :global(.mantine-Modal-body) .sidebar {
     display: none;
   }
 }

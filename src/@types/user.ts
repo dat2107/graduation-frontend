@@ -61,6 +61,12 @@ export interface UserDTO {
   dob: string | null // yyyy-MM-dd
   gender: UserGender | null
   email: string
+  avatarUrl: string | null
+}
+
+/** Matches BE: UpdateAvatarReq */
+export interface UpdateAvatarRequest {
+  base64Image: string
 }
 
 /** Matches BE: UpdateUserInfoReq */
@@ -94,4 +100,36 @@ export interface UpdateActiveUserResponse {
 export interface UpdateUserRoleRequest {
   keycloakUserId: string
   newRole: UserRole
+}
+
+// ─── Admin User List ─────────────────────────────────────────────────────────
+
+/** Matches BE: AdminUserRes */
+export interface AdminUserRes {
+  id: string
+  username: string
+  fullName: string
+  email: string
+  role: UserRole
+  active: boolean
+  provider: UserProvider
+  keycloakUserId: string
+  createdAt: string // yyyy-MM-dd HH:mm:ss
+}
+
+/** Matches BE: CreateTeacherReq */
+export interface CreateTeacherRequest {
+  username: string
+  password: string
+  fullName: string
+  email: string
+}
+
+/** Matches BE: PageResponse<T> */
+export interface PageResponse<T> {
+  items: T[]
+  totalItems: number
+  totalPages: number
+  page: number
+  size: number
 }

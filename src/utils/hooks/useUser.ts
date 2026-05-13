@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useAppDispatch, useAppSelector } from '@/store'
-import { setUser } from '@/store'
+import { setUser, setAvatarUrl } from '@/store'
 import UserService from '@/services/user/user.service'
 import type { UpdateActiveUserRequest, UpdateUserInfoRequest, UpdateUserRoleRequest } from '@/@types/user'
 
@@ -24,6 +24,9 @@ function useUser() {
             email: resp.data.email,
           })
         )
+        if (resp.data.avatarUrl) {
+          dispatch(setAvatarUrl(resp.data.avatarUrl))
+        }
       }
       return { code: '0', message: 'success', data: resp.data }
     } catch (errors: any) {
@@ -88,12 +91,33 @@ function useUser() {
     }
   }
 
+  // ─── Update avatar ───────────────────────────────────────────────────────────
+  const updateAvatar = async (base64Image: string) => {
+    try {
+      setLoading(true)
+      const resp = await UserService.updateAvatar({ base64Image })
+      if (resp.data.avatarUrl) {
+        dispatch(setAvatarUrl(resp.data.avatarUrl))
+      }
+      return { code: '0', message: 'Cập nhật ảnh đại diện thành công!', data: resp.data }
+    } catch (errors: any) {
+      return {
+        code: 'failed',
+        message: errors?.response?.data?.message || errors.toString(),
+        data: null,
+      }
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return {
     loading,
     getUserInfo,
     updateInfo,
     updateActiveStatus,
     updateRole,
+    updateAvatar,
   }
 }
 

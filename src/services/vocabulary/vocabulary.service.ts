@@ -1,11 +1,17 @@
 import ApiService from '@/services/ApiService'
-import type { BaseResponse } from '@/@types/user'
+import type { BaseResponse, PageResponse } from '@/@types/user'
 import type {
-  VocabSet,
-  VocabSetDetail,
+  CreateVocabTopicRequest,
+  CreateVocabWordRequest,
   FlashcardReviewRequest,
   FlashcardReviewResponse,
+  UpdateVocabTopicRequest,
+  UpdateVocabWordRequest,
   VocabProgress,
+  VocabSet,
+  VocabSetDetail,
+  VocabTopicManage,
+  VocabWordManage,
 } from '@/@types/vocabulary'
 
 export const VocabularyService = {
@@ -43,6 +49,86 @@ export const VocabularyService = {
     const res = await ApiService.fetchData<undefined, BaseResponse<VocabProgress>>({
       url: '/api/vocabulary/user-progress',
       method: 'GET',
+    })
+    return res.data
+  },
+
+  // ─── Teacher Management ──────────────────────────────────────────────────
+
+  /** GET /api/vocabulary/manage/topics */
+  async getTopicsForManage(params: { page?: number; size?: number; search?: string; level?: string }) {
+    const res = await ApiService.fetchData<null, BaseResponse<PageResponse<VocabTopicManage>>>({
+      url: '/api/vocabulary/manage/topics',
+      method: 'GET',
+      params,
+    })
+    return res.data
+  },
+
+  /** POST /api/vocabulary/manage/topics */
+  async createTopic(data: CreateVocabTopicRequest) {
+    const res = await ApiService.fetchData<CreateVocabTopicRequest, BaseResponse<VocabTopicManage>>({
+      url: '/api/vocabulary/manage/topics',
+      method: 'POST',
+      data,
+    })
+    return res.data
+  },
+
+  /** PUT /api/vocabulary/manage/topics/:id */
+  async updateTopic(id: number, data: UpdateVocabTopicRequest) {
+    const res = await ApiService.fetchData<UpdateVocabTopicRequest, BaseResponse<VocabTopicManage>>({
+      url: `/api/vocabulary/manage/topics/${id}`,
+      method: 'PUT',
+      data,
+    })
+    return res.data
+  },
+
+  /** DELETE /api/vocabulary/manage/topics/:id */
+  async deleteTopic(id: number) {
+    const res = await ApiService.fetchData<null, BaseResponse<null>>({
+      url: `/api/vocabulary/manage/topics/${id}`,
+      method: 'DELETE',
+    })
+    return res.data
+  },
+
+  /** GET /api/vocabulary/manage/topics/:topicId/words */
+  async getWordsForManage(topicId: number, params: { page?: number; size?: number; search?: string }) {
+    const res = await ApiService.fetchData<null, BaseResponse<PageResponse<VocabWordManage>>>({
+      url: `/api/vocabulary/manage/topics/${topicId}/words`,
+      method: 'GET',
+      params,
+    })
+    return res.data
+  },
+
+  /** POST /api/vocabulary/manage/topics/:topicId/words */
+  async createWord(topicId: number, data: CreateVocabWordRequest) {
+    const res = await ApiService.fetchData<CreateVocabWordRequest, BaseResponse<VocabWordManage>>({
+      url: `/api/vocabulary/manage/topics/${topicId}/words`,
+      method: 'POST',
+      data,
+    })
+    return res.data
+  },
+
+  /** PUT /api/vocabulary/manage/words/:wordId */
+  async updateWord(wordId: number, data: UpdateVocabWordRequest) {
+    const res = await ApiService.fetchData<UpdateVocabWordRequest, BaseResponse<VocabWordManage>>({
+      url: `/api/vocabulary/manage/words/${wordId}`,
+      method: 'PUT',
+      data,
+    })
+    return res.data
+  },
+
+  /** DELETE /api/vocabulary/manage/words/:wordId */
+  async deleteWord(wordId: number) {
+    const res = await ApiService.fetchData<null, BaseResponse<null>>({
+      url: `/api/vocabulary/manage/words/${wordId}`,
+      method: 'DELETE',
     })
     return res.data
   },

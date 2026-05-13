@@ -1,0 +1,103 @@
+.pageLayout {
+  display: flex;
+  gap: 24px;
+  min-height: calc(100vh - 120px);
+  padding: 24px;
+}
+
+.formPanel {
+  flex: 1;
+  min-width: 0;
+}
+
+.resultPanel {
+  flex: 1;
+  min-width: 0;
+}
+
+.historyItem {
+  padding: 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.historyItem:hover {
+  background-color: var(--mantine-color-gray-1);
+}
+
+.historyItemActive {
+  background-color: var(--mantine-color-blue-0);
+  border: 1px solid var(--mantine-color-blue-3);
+}
+
+.scoreCard {
+  text-align: center;
+  padding: 16px;
+  border-radius: 12px;
+  background: var(--mantine-color-gray-0);
+}
+
+.overallScore {
+  font-size: 48px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.correctedText {
+  background: var(--mantine-color-green-0);
+  border: 1px solid var(--mantine-color-green-3);
+  border-radius: 8px;
+  padding: 16px;
+  white-space: pre-wrap;
+  line-height: 1.7;
+}
+
+.feedbackText {
+  white-space: pre-wrap;
+  line-height: 1.7;
+}
+
+/* Inline quick-check errors */
+.inlineErrors {
+  border: 1px solid var(--mantine-color-orange-3);
+  border-radius: 8px;
+  background: var(--mantine-color-orange-0);
+  padding: 12px 16px;
+}
+
+.errorItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 6px 0;
+}
+
+.errorItem + .errorItem {
+  border-top: 1px solid var(--mantine-color-orange-2);
+}
+
+.errorOriginal {
+  text-decoration: line-through;
+  color: var(--mantine-color-red-7);
+  font-weight: 600;
+}
+
+.errorCorrection {
+  color: var(--mantine-color-green-7);
+  font-weight: 600;
+}
+
+.checkingIndicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--mantine-color-dimmed);
+  font-size: 13px;
+}
+
+@media (max-width: 900px) {
+  .pageLayout {
+    flex-direction: column;
+  }
+}

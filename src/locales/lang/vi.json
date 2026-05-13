@@ -13,7 +13,17 @@
     "aiChat": "AI Chatbot",
     "profile": "Hồ sơ cá nhân",
     "logout": "Đăng xuất",
-    "comingSoon": "Sắp có"
+    "comingSoon": "Sắp có",
+    "ieltsPractice": "Luyện đề IELTS",
+    "writingCheck": "AI Chấm bài viết",
+    "teacherDivider": "Quản lý nội dung",
+    "teacherVocabulary": "QL Từ vựng",
+    "teacherGrammar": "QL Ngữ pháp",
+    "teacherListening": "QL Luyện nghe",
+    "adminDivider": "Quản trị hệ thống",
+    "adminDashboard": "Bảng điều khiển",
+    "adminUsers": "Quản lý người dùng",
+    "adminContent": "Quản lý nội dung"
   },
   "landing": {
     "nav": {
@@ -190,5 +200,32 @@
       "wrong": "Sai",
       "xpEarned": "XP"
     }
+  },
+  "profile": {
+    "title": "Hồ sơ cá nhân",
+    "editInfo": "Chỉnh sửa thông tin",
+    "fullName": "Họ và tên",
+    "fullNamePlaceholder": "Nhập họ và tên",
+    "email": "Email",
+    "emailPlaceholder": "Nhập email",
+    "gender": "Giới tính",
+    "genderPlaceholder": "Chọn giới tính",
+    "genderMale": "Nam",
+    "genderFemale": "Nữ",
+    "genderOther": "Khác",
+    "dob": "Ngày sinh",
+    "dobPlaceholder": "Chọn ngày sinh",
+    "save": "Lưu thay đổi",
+    "avatarTooLarge": "Ảnh không được vượt quá 2MB",
+    "roleAdmin": "Quản trị viên",
+    "roleTeacher": "Giảng viên",
+    "roleStudent": "Học viên"
+  },
+  "sidebar": {
+    "comingSoon": "Sắp ra mắt",
+    "comingSoonBadge": "Sắp có",
+    "profile": "Hồ sơ cá nhân",
+    "logout": "Đăng xuất",
+    "account": "Tài khoản"
   }
 }

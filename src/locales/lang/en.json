@@ -13,7 +13,17 @@
     "aiChat": "AI Chatbot",
     "profile": "Profile",
     "logout": "Logout",
-    "comingSoon": "Coming soon"
+    "comingSoon": "Coming soon",
+    "ieltsPractice": "IELTS Practice",
+    "writingCheck": "AI Writing Check",
+    "teacherDivider": "Content Management",
+    "teacherVocabulary": "Vocabulary Mgmt",
+    "teacherGrammar": "Grammar Mgmt",
+    "teacherListening": "Listening Mgmt",
+    "adminDivider": "System Administration",
+    "adminDashboard": "Dashboard",
+    "adminUsers": "User Management",
+    "adminContent": "Content Management"
   },
   "landing": {
     "nav": {
@@ -190,5 +200,32 @@
       "wrong": "Wrong",
       "xpEarned": "XP"
     }
+  },
+  "profile": {
+    "title": "Profile",
+    "editInfo": "Edit information",
+    "fullName": "Full name",
+    "fullNamePlaceholder": "Enter full name",
+    "email": "Email",
+    "emailPlaceholder": "Enter email",
+    "gender": "Gender",
+    "genderPlaceholder": "Select gender",
+    "genderMale": "Male",
+    "genderFemale": "Female",
+    "genderOther": "Other",
+    "dob": "Date of birth",
+    "dobPlaceholder": "Select date of birth",
+    "save": "Save changes",
+    "avatarTooLarge": "Image must not exceed 2MB",
+    "roleAdmin": "Administrator",
+    "roleTeacher": "Teacher",
+    "roleStudent": "Student"
+  },
+  "sidebar": {
+    "comingSoon": "Coming soon",
+    "comingSoonBadge": "Soon",
+    "profile": "Profile",
+    "logout": "Logout",
+    "account": "Account"
   }
 }

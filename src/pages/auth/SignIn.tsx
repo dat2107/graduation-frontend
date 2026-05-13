@@ -25,6 +25,7 @@ import * as yup from 'yup'
 import appConfig from '@/configs/app.config'
 import { REDIRECT_URL_KEY } from '@/constants/app.constant'
 import useAuth from '@/utils/hooks/useAuth'
+import { useAppSelector } from '@/store'
 
 export default function SignIn() {
   const { t } = useTranslation()
@@ -33,13 +34,22 @@ export default function SignIn() {
   const [searchParams] = useSearchParams()
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+  const userRole = useAppSelector((state) => state.auth.userInfo.role)
 
   useEffect(() => {
     if (authenticated) {
       const redirectUrl = searchParams.get(REDIRECT_URL_KEY)
-      navigate(redirectUrl || appConfig.authenticatedEntryPath, { replace: true })
+      if (redirectUrl) {
+        navigate(redirectUrl, { replace: true })
+      } else if (userRole === 'ADMIN') {
+        navigate('/admin/users', { replace: true })
+      } else if (userRole === 'TEACHER') {
+        navigate('/teacher/vocabulary', { replace: true })
+      } else {
+        navigate(appConfig.authenticatedEntryPath, { replace: true })
+      }
     }
-  }, [authenticated])
+  }, [authenticated, userRole])
 
   const schema = yup.object().shape({
     username: yup.string().required(t('auth.signIn.validation.usernameRequired')),

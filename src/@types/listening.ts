@@ -77,3 +77,63 @@ export interface ListeningProgress {
   totalQuestionsDone: number
   totalListeningMinutes: number
 }
+
+// ─── Teacher Management Types ────────────────────────────────────────────────
+
+export interface ListeningTopicManage {
+  id: number
+  name: string
+  description: string
+  level: WordLevel
+  emoji: string
+  active: boolean
+  lessonCount: number
+  createdAt: string
+}
+
+export interface ListeningLessonManage {
+  id: number
+  title: string
+  description: string
+  level: WordLevel
+  orderIndex: number
+  durationSeconds: number | null
+  questionCount: number
+  audioUrl: string | null
+  active: boolean
+  createdAt: string
+}
+
+export interface CreateListeningTopicRequest {
+  name: string
+  description?: string
+  level: WordLevel
+  emoji?: string
+}
+
+export interface UpdateListeningTopicRequest {
+  name?: string
+  description?: string
+  level?: WordLevel
+  emoji?: string
+  active?: boolean
+}
+
+export interface CreateListeningLessonRequest {
+  title: string
+  description?: string
+  level: WordLevel
+  audioUrl?: string
+  transcript?: string
+  orderIndex?: number
+}
+
+export interface UpdateListeningLessonRequest {
+  title?: string
+  description?: string
+  level?: WordLevel
+  audioUrl?: string
+  transcript?: string
+  orderIndex?: number
+  active?: boolean
+}
