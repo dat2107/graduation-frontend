@@ -1,0 +1,101 @@
+.markdown {
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+}
+
+.markdown :where(p, ul, ol, blockquote, pre, table) {
+  margin: 0 0 0.75em;
+}
+
+.markdown :where(p:last-child, ul:last-child, ol:last-child, blockquote:last-child, pre:last-child, table:last-child) {
+  margin-bottom: 0;
+}
+
+.markdown :where(h1, h2, h3, h4, h5, h6) {
+  margin: 0.8em 0 0.4em;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.markdown h1 {
+  font-size: 1.35em;
+}
+
+.markdown h2 {
+  font-size: 1.22em;
+}
+
+.markdown h3 {
+  font-size: 1.1em;
+}
+
+.markdown :where(ul, ol) {
+  padding-left: 1.4em;
+}
+
+.markdown li + li {
+  margin-top: 0.25em;
+}
+
+.markdown blockquote {
+  border-left: 3px solid var(--mantine-color-blue-4);
+  color: var(--mantine-color-gray-7);
+  padding-left: 0.9em;
+}
+
+.markdown code {
+  background: var(--mantine-color-gray-2);
+  border-radius: 4px;
+  color: var(--mantine-color-dark-8);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, monospace;
+  font-size: 0.9em;
+  padding: 0.12em 0.32em;
+}
+
+.markdown pre {
+  background: var(--mantine-color-dark-7);
+  border-radius: 8px;
+  color: var(--mantine-color-gray-0);
+  overflow-x: auto;
+  padding: 12px;
+  white-space: pre;
+}
+
+.markdown pre code {
+  background: transparent;
+  color: inherit;
+  display: block;
+  padding: 0;
+}
+
+.markdown table {
+  border-collapse: collapse;
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.markdown :where(th, td) {
+  border: 1px solid var(--mantine-color-gray-3);
+  padding: 6px 8px;
+  text-align: left;
+}
+
+.markdown th {
+  background: var(--mantine-color-gray-1);
+  font-weight: 700;
+}
+
+.markdown a {
+  color: var(--mantine-color-blue-7);
+  text-decoration: underline;
+}
+
+.userMarkdown code {
+  background: rgb(255 255 255 / 18%);
+  color: white;
+}
+
+.userMarkdown a {
+  color: white;
+}

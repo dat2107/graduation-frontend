@@ -27,6 +27,7 @@ import {
   IconTrash,
 } from '@tabler/icons-react';
 import { ChatService } from '@/services/chat/chat.service';
+import { MarkdownContent } from '@/components/MarkdownContent';
 import type {
   ChatConversation,
   ChatMessage,
@@ -430,14 +431,21 @@ export default function AiChatPage() {
                           : styles.assistantBubble
                       }`}
                     >
-                      {msg.content ||
-                        (streaming && msg.role === 'ASSISTANT' && (
+                      {msg.content ? (
+                        <MarkdownContent
+                          content={msg.content}
+                          inverted={msg.role === 'USER'}
+                        />
+                      ) : (
+                        streaming &&
+                        msg.role === 'ASSISTANT' && (
                           <div className={styles.typingDots}>
                             <span className={styles.typingDot} />
                             <span className={styles.typingDot} />
                             <span className={styles.typingDot} />
                           </div>
-                        ))}
+                        )
+                      )}
                     </div>
                   ))}
                   <div ref={messagesEndRef} />

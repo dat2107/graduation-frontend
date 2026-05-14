@@ -25,6 +25,7 @@ import {
   IconAlertTriangle,
 } from '@tabler/icons-react';
 import { WritingService } from '@/services/writing/writing.service';
+import { MarkdownContent } from '@/components/MarkdownContent';
 import type { WritingSubmission, QuickCheckResponse } from '@/@types/writing';
 import type { EnglishLevel } from '@/@types/chat';
 import styles from './WritingCheckPage.module.css';
@@ -435,7 +436,7 @@ export default function WritingCheckPage() {
                   </Text>
                   <Divider mb="sm" />
                   <div className={styles.feedbackText}>
-                    {activeSubmission.feedback}
+                    <MarkdownContent content={activeSubmission.feedback} />
                   </div>
                 </Paper>
               )}
@@ -448,7 +449,7 @@ export default function WritingCheckPage() {
                   </Text>
                   <Divider mb="sm" />
                   <div className={styles.correctedText}>
-                    {activeSubmission.correctedText}
+                    <MarkdownContent content={activeSubmission.correctedText} />
                   </div>
                 </Paper>
               )}

@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useEffect, useRef, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import {
   ActionIcon,
   Badge,
@@ -19,7 +19,7 @@ import {
   TextInput,
   ThemeIcon,
   Title,
-} from '@mantine/core'
+} from '@mantine/core';
 import {
   IconArrowLeft,
   IconCheck,
@@ -32,13 +32,13 @@ import {
   IconPlayerPlay,
   IconStar,
   IconX,
-} from '@tabler/icons-react'
-import { ListeningService } from '@/services/listening/listening.service'
+} from '@tabler/icons-react';
+import { ListeningService } from '@/services/listening/listening.service';
 import type {
   ListeningLessonDetail as LessonDetailType,
   ListeningQuestion,
   ListeningSubmitResult,
-} from '@/@types/listening'
+} from '@/@types/listening';
 
 // ─── Audio Player ────────────────────────────────────────────────────────────
 
@@ -47,102 +47,105 @@ function AudioPlayer({
   transcript,
   durationSeconds,
 }: {
-  audioUrl: string | null
-  transcript?: string
-  durationSeconds: number | null
+  audioUrl: string | null;
+  transcript?: string;
+  durationSeconds: number | null;
 }) {
-  const audioRef = useRef<HTMLAudioElement>(null)
-  const [playing, setPlaying] = useState(false)
-  const [currentTime, setCurrentTime] = useState(0)
-  const [duration, setDuration] = useState(durationSeconds ?? 0)
-  const [useTTS, setUseTTS] = useState(false)
-  const [audioError, setAudioError] = useState(false)
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const [playing, setPlaying] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(durationSeconds ?? 0);
+  const [useTTS, setUseTTS] = useState(false);
+  const [audioError, setAudioError] = useState(false);
 
   useEffect(() => {
-    const audio = audioRef.current
-    if (!audio) return
+    const audio = audioRef.current;
+    if (!audio) return;
 
-    const onTimeUpdate = () => setCurrentTime(audio.currentTime)
+    const onTimeUpdate = () => setCurrentTime(audio.currentTime);
     const onLoadedMetadata = () => {
       if (audio.duration && isFinite(audio.duration)) {
-        setDuration(audio.duration)
+        setDuration(audio.duration);
       }
-    }
-    const onEnded = () => setPlaying(false)
+    };
+    const onEnded = () => setPlaying(false);
     const onError = () => {
-      setAudioError(true)
-      if (transcript) setUseTTS(true)
-    }
+      setAudioError(true);
+      if (transcript) setUseTTS(true);
+    };
 
-    audio.addEventListener('timeupdate', onTimeUpdate)
-    audio.addEventListener('loadedmetadata', onLoadedMetadata)
-    audio.addEventListener('ended', onEnded)
-    audio.addEventListener('error', onError)
+    audio.addEventListener('timeupdate', onTimeUpdate);
+    audio.addEventListener('loadedmetadata', onLoadedMetadata);
+    audio.addEventListener('ended', onEnded);
+    audio.addEventListener('error', onError);
 
     return () => {
-      audio.removeEventListener('timeupdate', onTimeUpdate)
-      audio.removeEventListener('loadedmetadata', onLoadedMetadata)
-      audio.removeEventListener('ended', onEnded)
-      audio.removeEventListener('error', onError)
-    }
-  }, [transcript])
+      audio.removeEventListener('timeupdate', onTimeUpdate);
+      audio.removeEventListener('loadedmetadata', onLoadedMetadata);
+      audio.removeEventListener('ended', onEnded);
+      audio.removeEventListener('error', onError);
+    };
+  }, [transcript]);
 
   // If no valid audioUrl, switch to TTS mode immediately
   useEffect(() => {
     if (!audioUrl || audioUrl.includes('example.com')) {
-      setAudioError(true)
-      if (transcript) setUseTTS(true)
+      setAudioError(true);
+      if (transcript) setUseTTS(true);
     }
-  }, [audioUrl, transcript])
+  }, [audioUrl, transcript]);
 
   const togglePlay = () => {
     if (useTTS && transcript) {
       if (playing) {
-        window.speechSynthesis.cancel()
-        setPlaying(false)
+        window.speechSynthesis.cancel();
+        setPlaying(false);
       } else {
-        const utterance = new SpeechSynthesisUtterance(transcript)
-        utterance.lang = 'en-US'
-        utterance.rate = 0.9
-        const voices = window.speechSynthesis.getVoices()
-        const voice = voices.find((v) => v.lang.startsWith('en') && !v.localService)
-          ?? voices.find((v) => v.lang.startsWith('en'))
-        if (voice) utterance.voice = voice
-        utterance.onend = () => setPlaying(false)
-        utterance.onerror = () => setPlaying(false)
-        setPlaying(true)
-        window.speechSynthesis.speak(utterance)
+        const utterance = new SpeechSynthesisUtterance(transcript);
+        utterance.lang = 'en-US';
+        utterance.rate = 0.9;
+        const voices = window.speechSynthesis.getVoices();
+        const voice =
+          voices.find((v) => v.lang.startsWith('en') && !v.localService) ??
+          voices.find((v) => v.lang.startsWith('en'));
+        if (voice) utterance.voice = voice;
+        utterance.onend = () => setPlaying(false);
+        utterance.onerror = () => setPlaying(false);
+        setPlaying(true);
+        window.speechSynthesis.speak(utterance);
       }
-      return
+      return;
     }
 
-    const audio = audioRef.current
-    if (!audio) return
+    const audio = audioRef.current;
+    if (!audio) return;
     if (playing) {
-      audio.pause()
+      audio.pause();
     } else {
-      audio.play()
+      audio.play();
     }
-    setPlaying(!playing)
-  }
+    setPlaying(!playing);
+  };
 
   const handleSliderChange = (value: number) => {
-    if (useTTS) return
-    const audio = audioRef.current
-    if (!audio) return
-    audio.currentTime = value
-    setCurrentTime(value)
-  }
+    if (useTTS) return;
+    const audio = audioRef.current;
+    if (!audio) return;
+    audio.currentTime = value;
+    setCurrentTime(value);
+  };
 
   const formatTime = (sec: number) => {
-    const m = Math.floor(sec / 60)
-    const s = Math.floor(sec % 60)
-    return `${m}:${s.toString().padStart(2, '0')}`
-  }
+    const m = Math.floor(sec / 60);
+    const s = Math.floor(sec % 60);
+    return `${m}:${s.toString().padStart(2, '0')}`;
+  };
 
   return (
     <Card withBorder radius="md" p="md">
-      {!useTTS && <audio ref={audioRef} src={audioUrl ?? undefined} preload="metadata" />}
+      {!useTTS && (
+        <audio ref={audioRef} src={audioUrl ?? undefined} preload="metadata" />
+      )}
       <Group gap="md">
         <ActionIcon
           size="xl"
@@ -151,7 +154,11 @@ function AudioPlayer({
           variant="filled"
           onClick={togglePlay}
         >
-          {playing ? <IconPlayerPause size={20} /> : <IconPlayerPlay size={20} />}
+          {playing ? (
+            <IconPlayerPause size={20} />
+          ) : (
+            <IconPlayerPlay size={20} />
+          )}
         </ActionIcon>
         <Stack gap={4} style={{ flex: 1 }}>
           {useTTS ? (
@@ -187,7 +194,7 @@ function AudioPlayer({
         </Text>
       )}
     </Card>
-  )
+  );
 }
 
 // ─── Question Item ───────────────────────────────────────────────────────────
@@ -199,11 +206,11 @@ function QuestionItem({
   onAnswer,
   disabled,
 }: {
-  question: ListeningQuestion
-  index: number
-  answer: string
-  onAnswer: (value: string) => void
-  disabled: boolean
+  question: ListeningQuestion;
+  index: number;
+  answer: string;
+  onAnswer: (value: string) => void;
+  disabled: boolean;
 }) {
   return (
     <Card withBorder radius="md" p="md">
@@ -213,7 +220,11 @@ function QuestionItem({
             {index + 1}
           </Text>
         </ThemeIcon>
-        <Badge size="xs" variant="light" color={question.type === 'comprehension' ? 'blue' : 'orange'}>
+        <Badge
+          size="xs"
+          variant="light"
+          color={question.type === 'comprehension' ? 'blue' : 'orange'}
+        >
           {question.type === 'comprehension' ? 'Nghe hiểu' : 'Chính tả'}
         </Badge>
       </Group>
@@ -246,7 +257,7 @@ function QuestionItem({
         />
       )}
     </Card>
-  )
+  );
 }
 
 // ─── Result Detail ───────────────────────────────────────────────────────────
@@ -256,12 +267,12 @@ function ResultView({
   onRetry,
   onBack,
 }: {
-  result: ListeningSubmitResult
-  onRetry: () => void
-  onBack: () => void
+  result: ListeningSubmitResult;
+  onRetry: () => void;
+  onBack: () => void;
 }) {
   const scoreColor =
-    result.score >= 80 ? 'green' : result.score >= 60 ? 'yellow' : 'red'
+    result.score >= 80 ? 'green' : result.score >= 60 ? 'yellow' : 'red';
 
   return (
     <Stack gap="lg">
@@ -367,7 +378,11 @@ function ResultView({
 
       {/* Actions */}
       <Group justify="center">
-        <Button variant="light" onClick={onBack} leftSection={<IconArrowLeft size={16} />}>
+        <Button
+          variant="light"
+          onClick={onBack}
+          leftSection={<IconArrowLeft size={16} />}
+        >
           Quay lại
         </Button>
         <Button onClick={onRetry} leftSection={<IconStar size={16} />}>
@@ -375,49 +390,49 @@ function ResultView({
         </Button>
       </Group>
     </Stack>
-  )
+  );
 }
 
 // ─── Main Component ──────────────────────────────────────────────────────────
 
 export default function ListeningLessonDetailPage() {
-  const { lessonId } = useParams<{ lessonId: string }>()
-  const navigate = useNavigate()
+  const { lessonId } = useParams<{ lessonId: string }>();
+  const navigate = useNavigate();
 
-  const [lesson, setLesson] = useState<LessonDetailType | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [answers, setAnswers] = useState<Record<number, string>>({})
-  const [submitting, setSubmitting] = useState(false)
-  const [result, setResult] = useState<ListeningSubmitResult | null>(null)
-  const [activeTab, setActiveTab] = useState<string | null>('listen')
-  const [transcriptOpen, setTranscriptOpen] = useState(false)
+  const [lesson, setLesson] = useState<LessonDetailType | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [answers, setAnswers] = useState<Record<number, string>>({});
+  const [submitting, setSubmitting] = useState(false);
+  const [result, setResult] = useState<ListeningSubmitResult | null>(null);
+  const [activeTab, setActiveTab] = useState<string | null>('listen');
+  const [transcriptOpen, setTranscriptOpen] = useState(false);
 
   useEffect(() => {
-    if (!lessonId) return
+    if (!lessonId) return;
     const fetch = async () => {
-      setLoading(true)
-      const res = await ListeningService.getLessonDetail(Number(lessonId))
-      if (res?.status === 200 && res.data) setLesson(res.data)
-      setLoading(false)
-    }
-    fetch()
-  }, [lessonId])
+      setLoading(true);
+      const res = await ListeningService.getLessonDetail(Number(lessonId));
+      if (res?.status === 200 && res.data) setLesson(res.data);
+      setLoading(false);
+    };
+    fetch();
+  }, [lessonId]);
 
   const handleSubmit = async () => {
-    if (!lessonId || !lesson) return
-    setSubmitting(true)
-    const res = await ListeningService.submitAnswers(Number(lessonId), answers)
+    if (!lessonId || !lesson) return;
+    setSubmitting(true);
+    const res = await ListeningService.submitAnswers(Number(lessonId), answers);
     if (res?.status === 200 && res.data) {
-      setResult(res.data)
+      setResult(res.data);
     }
-    setSubmitting(false)
-  }
+    setSubmitting(false);
+  };
 
   const handleRetry = () => {
-    setAnswers({})
-    setResult(null)
-    setActiveTab('questions')
-  }
+    setAnswers({});
+    setResult(null);
+    setActiveTab('questions');
+  };
 
   if (loading) {
     return (
@@ -425,7 +440,7 @@ export default function ListeningLessonDetailPage() {
         <Loader size="lg" />
         <Text c="dimmed">Đang tải bài nghe...</Text>
       </Stack>
-    )
+    );
   }
 
   if (!lesson) {
@@ -437,17 +452,19 @@ export default function ListeningLessonDetailPage() {
           Quay lại
         </Button>
       </Stack>
-    )
+    );
   }
 
-  const answeredCount = Object.values(answers).filter((a) => a.trim().length > 0).length
+  const answeredCount = Object.values(answers).filter(
+    (a) => a.trim().length > 0
+  ).length;
 
   const formatDuration = (sec: number | null) => {
-    if (!sec) return '—'
-    const m = Math.floor(sec / 60)
-    const s = sec % 60
-    return s > 0 ? `${m}m ${s}s` : `${m}m`
-  }
+    if (!sec) return '—';
+    const m = Math.floor(sec / 60);
+    const s = sec % 60;
+    return s > 0 ? `${m}m ${s}s` : `${m}m`;
+  };
 
   return (
     <Stack gap="lg" p="md">
@@ -463,10 +480,18 @@ export default function ListeningLessonDetailPage() {
           </Text>
         </div>
         <Group ml="auto" gap="xs">
-          <Badge color="gray" variant="light" leftSection={<IconClock size={12} />}>
+          <Badge
+            color="gray"
+            variant="light"
+            leftSection={<IconClock size={12} />}
+          >
             {formatDuration(lesson.durationSeconds)}
           </Badge>
-          <Badge color={lesson.level === 'A1' || lesson.level === 'A2' ? 'green' : 'blue'}>
+          <Badge
+            color={
+              lesson.level === 'A1' || lesson.level === 'A2' ? 'green' : 'blue'
+            }
+          >
             {lesson.level}
           </Badge>
         </Group>
@@ -486,7 +511,10 @@ export default function ListeningLessonDetailPage() {
             <Tabs.Tab value="listen" leftSection={<IconHeadphones size={16} />}>
               Nghe
             </Tabs.Tab>
-            <Tabs.Tab value="questions" leftSection={<IconListCheck size={16} />}>
+            <Tabs.Tab
+              value="questions"
+              leftSection={<IconListCheck size={16} />}
+            >
               Câu hỏi ({lesson.questionCount})
             </Tabs.Tab>
           </Tabs.List>
@@ -507,7 +535,11 @@ export default function ListeningLessonDetailPage() {
                   fullWidth
                   onClick={() => setTranscriptOpen(!transcriptOpen)}
                   rightSection={
-                    transcriptOpen ? <IconChevronUp size={16} /> : <IconChevronDown size={16} />
+                    transcriptOpen ? (
+                      <IconChevronUp size={16} />
+                    ) : (
+                      <IconChevronDown size={16} />
+                    )
                   }
                   styles={{ root: { borderRadius: 0 } }}
                 >
@@ -568,5 +600,5 @@ export default function ListeningLessonDetailPage() {
         </Tabs>
       )}
     </Stack>
-  )
+  );
 }
