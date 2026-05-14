@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'react'
 import { Loader, Modal, Stack } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
+import { useLocation } from 'react-router-dom'
 import { IconMessageChatbot } from '@tabler/icons-react'
 import styles from './ChatFab.module.css'
 
@@ -8,6 +9,10 @@ const AiChatPage = lazy(() => import('@/pages/ai-chat/AiChatPage'))
 
 const ChatFab = () => {
   const [opened, { open, close }] = useDisclosure(false)
+  const { pathname } = useLocation()
+
+  // Hide FAB when already on the AI Chat page
+  if (pathname === '/ai-chat') return null
 
   return (
     <>
