@@ -49,8 +49,8 @@ const SKILL_TABS = [
   { value: 'all', label: 'Tất cả' },
   { value: 'reading', label: 'Reading' },
   { value: 'listening', label: 'Listening' },
-  { value: 'writing', label: 'Writing', disabled: true },
-  { value: 'speaking', label: 'Speaking', disabled: true },
+  { value: 'writing', label: 'Writing' },
+  { value: 'speaking', label: 'Speaking' },
 ]
 
 // ─── Test Card ───────────────────────────────────────────────────────────────

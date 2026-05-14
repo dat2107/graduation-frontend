@@ -59,6 +59,63 @@ export const protectedRoutes = [
     authority: ['STUDENT', 'TEACHER', 'ADMIN'],
   },
   // ── Vocabulary ───────────────────────────────────────────────────────────────
+  // ── IELTS Writing ──────────────────────────────────────────────────────────
+  {
+    key: 'ielts-writing',
+    path: '/ielts-writing',
+    component: lazy(() => import('@/pages/ielts-writing/IeltsWritingPage')),
+    authority: ['STUDENT', 'TEACHER', 'ADMIN'],
+  },
+  {
+    key: 'ielts-writing.exam',
+    path: '/ielts-writing/exam/:taskId',
+    component: lazy(() => import('@/pages/ielts-writing/IeltsWritingExam')),
+    authority: ['STUDENT', 'TEACHER', 'ADMIN'],
+  },
+  {
+    key: 'ielts-writing.result',
+    path: '/ielts-writing/result/:submissionId',
+    component: lazy(() => import('@/pages/ielts-writing/IeltsWritingResult')),
+    authority: ['STUDENT', 'TEACHER', 'ADMIN'],
+  },
+  // ── Speaking ──────────────────────────────────────────────────────────────
+  {
+    key: 'speaking',
+    path: '/speaking',
+    component: lazy(() => import('@/pages/speaking/SpeakingPage')),
+    authority: ['STUDENT', 'TEACHER', 'ADMIN'],
+  },
+  {
+    key: 'speaking.practice',
+    path: '/speaking/practice/:topicId',
+    component: lazy(() => import('@/pages/speaking/SpeakingPractice')),
+    authority: ['STUDENT', 'TEACHER', 'ADMIN'],
+  },
+  {
+    key: 'speaking.result',
+    path: '/speaking/result/:submissionId',
+    component: lazy(() => import('@/pages/speaking/SpeakingResult')),
+    authority: ['STUDENT', 'TEACHER', 'ADMIN'],
+  },
+  // ── IELTS Speaking ────────────────────────────────────────────────────────
+  {
+    key: 'ielts-speaking',
+    path: '/ielts-speaking',
+    component: lazy(() => import('@/pages/ielts-speaking/IeltsSpeakingTestList')),
+    authority: ['STUDENT', 'TEACHER', 'ADMIN'],
+  },
+  {
+    key: 'ielts-speaking.exam',
+    path: '/ielts-speaking/exam/:testId',
+    component: lazy(() => import('@/pages/ielts-speaking/IeltsSpeakingExam')),
+    authority: ['STUDENT', 'TEACHER', 'ADMIN'],
+  },
+  {
+    key: 'ielts-speaking.result',
+    path: '/ielts-speaking/result/:sessionId',
+    component: lazy(() => import('@/pages/ielts-speaking/IeltsSpeakingResult')),
+    authority: ['STUDENT', 'TEACHER', 'ADMIN'],
+  },
   // ── AI Chat ─────────────────────────────────────────────────────────────────
   {
     key: 'ai-chat',

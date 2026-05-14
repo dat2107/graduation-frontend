@@ -1,0 +1,37 @@
+.stepIndicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.stepDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--mantine-color-gray-3);
+  transition: background 0.2s ease;
+}
+
+.stepDotActive {
+  background: var(--mantine-color-violet-6);
+}
+
+.stepDotDone {
+  background: var(--mantine-color-green-6);
+}
+
+.cueCard {
+  background: linear-gradient(135deg, var(--mantine-color-violet-0), var(--mantine-color-grape-0));
+  border: 2px solid var(--mantine-color-violet-3);
+  padding: 24px;
+  border-radius: 12px;
+}
+
+.prepTimer {
+  animation: pulse 1s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
