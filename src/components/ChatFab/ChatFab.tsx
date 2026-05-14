@@ -44,7 +44,7 @@ const ChatFab = () => {
             </Stack>
           }
         >
-          <AiChatPage />
+          <AiChatPage quickStart />
         </Suspense>
       </Modal>
     </>

@@ -53,7 +53,11 @@ const levelColorMap: Record<string, string> = {
   C2: 'grape',
 };
 
-export default function AiChatPage() {
+interface AiChatPageProps {
+  quickStart?: boolean;
+}
+
+export default function AiChatPage({ quickStart = false }: AiChatPageProps) {
   // ── State ────────────────────────────────────────────────────────────────────
   const [conversations, setConversations] = useState<ChatConversation[]>([]);
   const [activeConvId, setActiveConvId] = useState<number | null>(null);
@@ -97,6 +101,35 @@ export default function AiChatPage() {
   useEffect(() => {
     loadConversations();
   }, [loadConversations]);
+
+  // ── Quick-start: auto-select latest or create a new conversation ────────────
+  const quickStartHandled = useRef(false);
+
+  useEffect(() => {
+    if (!quickStart || loadingConversations || quickStartHandled.current) return;
+    quickStartHandled.current = true;
+
+    if (conversations.length > 0) {
+      // Auto-select the most recent conversation
+      setActiveConvId(conversations[0].id);
+    } else {
+      // Auto-create a conversation with defaults
+      const autoCreate = async () => {
+        try {
+          const res = await ChatService.createConversation({
+            englishLevel: 'B1',
+          });
+          if (res?.status === 200 && res.data) {
+            setConversations((prev) => [res.data, ...prev]);
+            setActiveConvId(res.data.id);
+          }
+        } catch {
+          // silent
+        }
+      };
+      autoCreate();
+    }
+  }, [quickStart, loadingConversations, conversations]);
 
   // ── Load messages for active conversation ────────────────────────────────────
   useEffect(() => {
