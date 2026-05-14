@@ -311,12 +311,17 @@ export default function IeltsPracticePage() {
       {/* ── Skill filter ─────────────────────────────────────────────── */}
       <Tabs
         value={activeSkill}
-        onChange={(v) => setActiveSkill(v ?? 'all')}
+        onChange={(v) => {
+          const val = v ?? 'all'
+          if (val === 'writing') { navigate('/ielts-writing'); return }
+          if (val === 'speaking') { navigate('/ielts-speaking'); return }
+          setActiveSkill(val)
+        }}
         variant="pills"
       >
         <Tabs.List>
           {SKILL_TABS.map((t) => (
-            <Tabs.Tab key={t.value} value={t.value} disabled={t.disabled}>
+            <Tabs.Tab key={t.value} value={t.value}>
               {t.label}
             </Tabs.Tab>
           ))}
