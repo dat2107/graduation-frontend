@@ -20,17 +20,23 @@ import {
   IconFlame,
   IconHeadphones,
   IconListCheck,
+  IconMicrophone,
+  IconPencil,
   IconStar,
   IconTrophy,
-} from '@tabler/icons-react';
-import { useNavigate } from 'react-router-dom';
-import { IeltsService } from '@/services/ielts/ielts.service';
+} from '@tabler/icons-react'
+import { useNavigate } from 'react-router-dom'
+import { IeltsService } from '@/services/ielts/ielts.service'
+import { IeltsWritingService } from '@/services/ieltsWriting/ieltsWriting.service'
+import { IeltsSpeakingService } from '@/services/ieltsSpeaking/ieltsSpeaking.service'
 import type {
   IeltsDifficulty,
   IeltsHistoryItem,
   IeltsSkill,
   IeltsTest,
-} from '@/@types/ielts';
+} from '@/@types/ielts'
+import type { IeltsWritingTask, IeltsWritingTaskType } from '@/@types/ieltsWriting'
+import type { IeltsSpeakingTest } from '@/@types/ieltsSpeaking'
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -40,9 +46,16 @@ const difficultyConfig: Record<IeltsDifficulty, { label: string; color: string }
   hard: { label: 'Khó', color: 'red' },
 }
 
-const skillConfig: Record<IeltsSkill, { label: string; icon: typeof IconBook; color: string }> = {
+const skillConfig: Record<string, { label: string; icon: typeof IconBook; color: string }> = {
   reading: { label: 'Reading', icon: IconBook, color: 'blue' },
   listening: { label: 'Listening', icon: IconHeadphones, color: 'violet' },
+  writing: { label: 'Writing', icon: IconPencil, color: 'pink' },
+  speaking: { label: 'Speaking', icon: IconMicrophone, color: 'grape' },
+}
+
+const writingTaskTypeConfig: Record<IeltsWritingTaskType, { label: string; color: string }> = {
+  TASK_1: { label: 'Task 1', color: 'blue' },
+  TASK_2: { label: 'Task 2', color: 'grape' },
 }
 
 const SKILL_TABS = [
@@ -53,28 +66,28 @@ const SKILL_TABS = [
   { value: 'speaking', label: 'Speaking' },
 ]
 
-// ─── Test Card ───────────────────────────────────────────────────────────────
+// ─── Reading/Listening Test Card ────────────────────────────────────────────
 
 function IeltsTestCard({
   test,
   onClick,
 }: {
-  test: IeltsTest;
-  onClick: () => void;
+  test: IeltsTest
+  onClick: () => void
 }) {
   const skill = skillConfig[test.skill] ?? {
     label: test.skill ?? 'Unknown',
     icon: IconBook,
     color: 'gray',
-  };
+  }
 
   const diff = difficultyConfig[test.difficulty] ?? {
     label: test.difficulty ?? 'Unknown',
     color: 'gray',
-  };
+  }
 
-  const SkillIcon = skill.icon;
-  const isNew = (test.completedCount ?? 0) === 0;
+  const SkillIcon = skill.icon
+  const isNew = (test.completedCount ?? 0) === 0
 
   return (
     <Card
@@ -189,16 +202,179 @@ function IeltsTestCard({
         </Button>
       </Stack>
     </Card>
-  );
+  )
+}
+
+// ─── Writing Task Card ──────────────────────────────────────────────────────
+
+function WritingTaskCard({
+  task,
+  onClick,
+}: {
+  task: IeltsWritingTask
+  onClick: () => void
+}) {
+  const cfg = writingTaskTypeConfig[task.taskType]
+  const skill = skillConfig.writing
+
+  return (
+    <Card
+      withBorder
+      radius="md"
+      shadow="xs"
+      p={0}
+      style={{ overflow: 'hidden' }}
+    >
+      <Card.Section
+        style={{
+          background: `var(--mantine-color-${skill.color}-1)`,
+          padding: '16px',
+          borderBottom: `2px solid var(--mantine-color-${skill.color}-3)`,
+        }}
+      >
+        <Group justify="space-between" align="flex-start">
+          <ThemeIcon size="lg" radius="md" color={skill.color} variant="light">
+            <IconPencil size={20} />
+          </ThemeIcon>
+          <Group gap={6}>
+            <Badge size="sm" color={cfg.color} variant="filled">
+              {cfg.label}
+            </Badge>
+            {task.topic && (
+              <Badge size="sm" color="gray" variant="light">
+                {task.topic}
+              </Badge>
+            )}
+          </Group>
+        </Group>
+        <Text fw={700} size="md" mt={8} lineClamp={2} style={{ minHeight: 44 }}>
+          {task.title}
+        </Text>
+      </Card.Section>
+
+      <Stack p="md" gap="sm">
+        <Text size="sm" c="dimmed" lineClamp={2} style={{ minHeight: 40 }}>
+          {task.promptText}
+        </Text>
+
+        <Group gap="lg">
+          <Group gap={4}>
+            <IconClock size={14} color="var(--mantine-color-gray-6)" />
+            <Text size="xs" c="dimmed">
+              {task.timeLimitMinutes} phút
+            </Text>
+          </Group>
+          <Group gap={4}>
+            <IconPencil size={14} color="var(--mantine-color-gray-6)" />
+            <Text size="xs" c="dimmed">
+              Tối thiểu {task.minWords} từ
+            </Text>
+          </Group>
+        </Group>
+
+        <Button
+          variant="filled"
+          color={skill.color}
+          size="sm"
+          fullWidth
+          onClick={onClick}
+          leftSection={<IconListCheck size={16} />}
+        >
+          Làm bài
+        </Button>
+      </Stack>
+    </Card>
+  )
+}
+
+// ─── Speaking Test Card ─────────────────────────────────────────────────────
+
+function SpeakingTestCard({
+  test,
+  onClick,
+}: {
+  test: IeltsSpeakingTest
+  onClick: () => void
+}) {
+  const skill = skillConfig.speaking
+
+  return (
+    <Card
+      withBorder
+      radius="md"
+      shadow="xs"
+      p={0}
+      style={{ overflow: 'hidden' }}
+    >
+      <Card.Section
+        style={{
+          background: `var(--mantine-color-${skill.color}-1)`,
+          padding: '16px',
+          borderBottom: `2px solid var(--mantine-color-${skill.color}-3)`,
+        }}
+      >
+        <Group justify="space-between" align="flex-start">
+          <ThemeIcon size="lg" radius="md" color={skill.color} variant="light">
+            <IconMicrophone size={20} />
+          </ThemeIcon>
+          <Group gap={6}>
+            <Badge size="sm" color={skill.color} variant="filled">
+              Speaking
+            </Badge>
+            {test.topic && (
+              <Badge size="sm" color="gray" variant="light">
+                {test.topic}
+              </Badge>
+            )}
+          </Group>
+        </Group>
+        <Text fw={700} size="md" mt={8} lineClamp={2} style={{ minHeight: 44 }}>
+          {test.title}
+        </Text>
+      </Card.Section>
+
+      <Stack p="md" gap="sm">
+        <Text size="sm" c="dimmed" lineClamp={2} style={{ minHeight: 40 }}>
+          {test.description}
+        </Text>
+
+        <Group gap="lg">
+          <Group gap={4}>
+            <IconListCheck size={14} color="var(--mantine-color-gray-6)" />
+            <Text size="xs" c="dimmed">
+              {test.questionCount} câu hỏi
+            </Text>
+          </Group>
+          <Group gap={4}>
+            <IconMicrophone size={14} color="var(--mantine-color-gray-6)" />
+            <Text size="xs" c="dimmed">
+              3 phần
+            </Text>
+          </Group>
+        </Group>
+
+        <Button
+          variant="filled"
+          color={skill.color}
+          size="sm"
+          fullWidth
+          onClick={onClick}
+          leftSection={<IconListCheck size={16} />}
+        >
+          Làm bài
+        </Button>
+      </Stack>
+    </Card>
+  )
 }
 
 // ─── History Row ─────────────────────────────────────────────────────────────
 
 function HistoryRow({ item }: { item: IeltsHistoryItem }) {
   const scoreColor =
-    item.score >= 80 ? 'green' : item.score >= 60 ? 'yellow' : 'red';
-  const date = new Date(item.completedAt).toLocaleDateString('vi-VN');
-  const skill = skillConfig[item.skill] ?? { label: item.skill ?? 'Unknown', color: 'gray' };
+    item.score >= 80 ? 'green' : item.score >= 60 ? 'yellow' : 'red'
+  const date = new Date(item.completedAt).toLocaleDateString('vi-VN')
+  const skill = skillConfig[item.skill] ?? { label: item.skill ?? 'Unknown', color: 'gray' }
   return (
     <Group
       justify="space-between"
@@ -222,41 +398,69 @@ function HistoryRow({ item }: { item: IeltsHistoryItem }) {
         {item.score}%
       </Badge>
     </Group>
-  );
+  )
 }
 
 // ─── Main Page ───────────────────────────────────────────────────────────────
 
 export default function IeltsPracticePage() {
-  const navigate = useNavigate();
-  const [tests, setTests] = useState<IeltsTest[]>([]);
-  const [history, setHistory] = useState<IeltsHistoryItem[]>([]);
-  const [activeSkill, setActiveSkill] = useState('all');
-  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate()
+  const [activeSkill, setActiveSkill] = useState('all')
+  const [loading, setLoading] = useState(true)
+
+  // Reading/Listening data
+  const [tests, setTests] = useState<IeltsTest[]>([])
+  const [history, setHistory] = useState<IeltsHistoryItem[]>([])
+
+  // Writing data
+  const [writingTasks, setWritingTasks] = useState<IeltsWritingTask[]>([])
+
+  // Speaking data
+  const [speakingTests, setSpeakingTests] = useState<IeltsSpeakingTest[]>([])
 
   useEffect(() => {
-    const fetch = async () => {
-      setLoading(true);
-      const params = activeSkill === 'all' ? undefined : { skill: activeSkill };
-      const [testsRes, historyRes] = await Promise.all([
-        IeltsService.getTests(params),
-        IeltsService.getHistory(),
-      ]);
-      if (testsRes?.status === 200 && testsRes.data) setTests(testsRes.data);
-      if (historyRes?.status === 200 && historyRes.data)
-        setHistory(historyRes.data);
-      setLoading(false);
-    };
-    fetch();
-  }, [activeSkill]);
+    const fetchData = async () => {
+      setLoading(true)
 
-  const doneCount = tests.filter((t) => t.completedCount > 0).length;
-  const avgScore =
-    history.length > 0
-      ? Math.round(
-          history.reduce((sum, h) => sum + h.score, 0) / history.length
-        )
-      : 0;
+      if (activeSkill === 'writing') {
+        const res = await IeltsWritingService.getTasks()
+        if (res?.status === 200 && res.data) setWritingTasks(res.data)
+      } else if (activeSkill === 'speaking') {
+        const res = await IeltsSpeakingService.getTests()
+        if (res?.status === 200 && res.data) setSpeakingTests(res.data)
+      } else {
+        const params = activeSkill === 'all' ? undefined : { skill: activeSkill }
+        const [testsRes, historyRes] = await Promise.all([
+          IeltsService.getTests(params),
+          IeltsService.getHistory(),
+        ])
+        if (testsRes?.status === 200 && testsRes.data) setTests(testsRes.data)
+        if (historyRes?.status === 200 && historyRes.data) setHistory(historyRes.data)
+      }
+
+      setLoading(false)
+    }
+    fetchData()
+  }, [activeSkill])
+
+  // Stats depend on active tab
+  const isWriting = activeSkill === 'writing'
+  const isSpeaking = activeSkill === 'speaking'
+  const isReadingListening = !isWriting && !isSpeaking
+
+  const totalCount = isWriting
+    ? writingTasks.length
+    : isSpeaking
+      ? speakingTests.length
+      : tests.length
+
+  const doneCount = isReadingListening
+    ? tests.filter((t) => t.completedCount > 0).length
+    : 0
+
+  const avgScore = isReadingListening && history.length > 0
+    ? `${Math.round(history.reduce((sum, h) => sum + h.score, 0) / history.length)}%`
+    : '—'
 
   return (
     <Stack gap="xl" p="md">
@@ -264,7 +468,7 @@ export default function IeltsPracticePage() {
       <div>
         <Title order={2}>Luyện đề IELTS</Title>
         <Text c="dimmed" size="sm" mt={4}>
-          Luyện tập Reading và Listening theo chuẩn đề thi IELTS
+          Luyện tập Reading, Listening, Writing và Speaking theo chuẩn đề thi IELTS
         </Text>
       </div>
 
@@ -274,7 +478,7 @@ export default function IeltsPracticePage() {
           {
             icon: <IconListCheck size={18} />,
             label: 'Bài có sẵn',
-            value: tests.length,
+            value: totalCount,
             color: 'blue',
           },
           {
@@ -286,7 +490,7 @@ export default function IeltsPracticePage() {
           {
             icon: <IconTrophy size={18} />,
             label: 'Điểm TB',
-            value: history.length > 0 ? `${avgScore}%` : '—',
+            value: avgScore,
             color: 'orange',
           },
         ].map((s) => (
@@ -311,12 +515,7 @@ export default function IeltsPracticePage() {
       {/* ── Skill filter ─────────────────────────────────────────────── */}
       <Tabs
         value={activeSkill}
-        onChange={(v) => {
-          const val = v ?? 'all'
-          if (val === 'writing') { navigate('/ielts-writing'); return }
-          if (val === 'speaking') { navigate('/ielts-speaking'); return }
-          setActiveSkill(val)
-        }}
+        onChange={(v) => setActiveSkill(v ?? 'all')}
         variant="pills"
       >
         <Tabs.List>
@@ -328,13 +527,47 @@ export default function IeltsPracticePage() {
         </Tabs.List>
       </Tabs>
 
-      {/* ── Test grid ────────────────────────────────────────────────── */}
+      {/* ── Content grid ───────────────────────────────────────────────── */}
       {loading ? (
         <SimpleGrid cols={{ base: 1, sm: 2, lg: 3 }} spacing="md">
           {[1, 2, 3, 4, 5].map((i) => (
             <Skeleton key={i} height={280} radius="md" />
           ))}
         </SimpleGrid>
+      ) : isWriting ? (
+        writingTasks.length === 0 ? (
+          <Stack align="center" py="xl">
+            <Text size="3rem">📭</Text>
+            <Text c="dimmed">Chưa có đề Writing nào</Text>
+          </Stack>
+        ) : (
+          <SimpleGrid cols={{ base: 1, sm: 2, lg: 3 }} spacing="md">
+            {writingTasks.map((task) => (
+              <WritingTaskCard
+                key={task.id}
+                task={task}
+                onClick={() => navigate(`/ielts-writing/exam/${task.id}`)}
+              />
+            ))}
+          </SimpleGrid>
+        )
+      ) : isSpeaking ? (
+        speakingTests.length === 0 ? (
+          <Stack align="center" py="xl">
+            <Text size="3rem">📭</Text>
+            <Text c="dimmed">Chưa có đề Speaking nào</Text>
+          </Stack>
+        ) : (
+          <SimpleGrid cols={{ base: 1, sm: 2, lg: 3 }} spacing="md">
+            {speakingTests.map((test) => (
+              <SpeakingTestCard
+                key={test.id}
+                test={test}
+                onClick={() => navigate(`/ielts-speaking/exam/${test.id}`)}
+              />
+            ))}
+          </SimpleGrid>
+        )
       ) : tests.length === 0 ? (
         <Stack align="center" py="xl">
           <Text size="3rem">📭</Text>
@@ -352,8 +585,8 @@ export default function IeltsPracticePage() {
         </SimpleGrid>
       )}
 
-      {/* ── History ──────────────────────────────────────────────────── */}
-      {history.length > 0 && (
+      {/* ── History (Reading/Listening only) ────────────────────────────── */}
+      {isReadingListening && history.length > 0 && (
         <Stack gap="sm">
           <Title order={4}>Lịch sử làm bài gần đây</Title>
           <Card withBorder radius="md" p="md">
@@ -364,5 +597,5 @@ export default function IeltsPracticePage() {
         </Stack>
       )}
     </Stack>
-  );
+  )
 }
