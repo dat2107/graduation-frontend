@@ -1,6 +1,12 @@
 import ApiService from '@/services/ApiService'
 import type { BaseResponse } from '@/@types/user'
-import type { SpeakingTopic, SpeakingSubmission } from '@/@types/speaking'
+import type {
+  CreateSpeakingTopicRequest,
+  SpeakingSubmission,
+  SpeakingTopic,
+  SpeakingTopicManage,
+  UpdateSpeakingTopicRequest,
+} from '@/@types/speaking'
 
 export const SpeakingService = {
   async getTopics(params?: { promptType?: string; difficulty?: string }) {
@@ -8,6 +14,37 @@ export const SpeakingService = {
       url: '/api/speaking/topics',
       method: 'GET',
       params: params ?? {},
+    })
+    return res.data
+  },
+
+  // ─── Teacher Management ──────────────────────────────────────────────────
+
+  /** POST /api/speaking/topics — Tạo chủ đề mới (TEACHER/ADMIN) */
+  async createTopic(data: CreateSpeakingTopicRequest) {
+    const res = await ApiService.fetchData<CreateSpeakingTopicRequest, BaseResponse<SpeakingTopicManage>>({
+      url: '/api/speaking/topics',
+      method: 'POST',
+      data,
+    })
+    return res.data
+  },
+
+  /** PUT /api/speaking/topics/:topicId — Cập nhật (partial, chỉ field non-null) */
+  async updateTopic(topicId: number, data: UpdateSpeakingTopicRequest) {
+    const res = await ApiService.fetchData<UpdateSpeakingTopicRequest, BaseResponse<SpeakingTopicManage>>({
+      url: `/api/speaking/topics/${topicId}`,
+      method: 'PUT',
+      data,
+    })
+    return res.data
+  },
+
+  /** DELETE /api/speaking/topics/:topicId — Xóa (lỗi nếu có submissions) */
+  async deleteTopic(topicId: number) {
+    const res = await ApiService.fetchData<null, BaseResponse<null>>({
+      url: `/api/speaking/topics/${topicId}`,
+      method: 'DELETE',
     })
     return res.data
   },

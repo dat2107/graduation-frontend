@@ -1,6 +1,13 @@
 import ApiService from '@/services/ApiService'
 import type { BaseResponse } from '@/@types/user'
-import type { IeltsWritingTask, IeltsWritingSubmission, SubmitIeltsWritingRequest } from '@/@types/ieltsWriting'
+import type {
+  CreateIeltsWritingTaskRequest,
+  IeltsWritingSubmission,
+  IeltsWritingTask,
+  IeltsWritingTaskManage,
+  SubmitIeltsWritingRequest,
+  UpdateIeltsWritingTaskRequest,
+} from '@/@types/ieltsWriting'
 
 export const IeltsWritingService = {
   async getTasks(params?: { taskType?: string; topic?: string }) {
@@ -16,6 +23,37 @@ export const IeltsWritingService = {
     const res = await ApiService.fetchData<undefined, BaseResponse<IeltsWritingTask>>({
       url: `/api/ielts-writing/tasks/${taskId}`,
       method: 'GET',
+    })
+    return res.data
+  },
+
+  // ─── Teacher Management ──────────────────────────────────────────────────
+
+  /** POST /api/ielts-writing/tasks — Tạo task mới (TEACHER/ADMIN) */
+  async createTask(data: CreateIeltsWritingTaskRequest) {
+    const res = await ApiService.fetchData<CreateIeltsWritingTaskRequest, BaseResponse<IeltsWritingTaskManage>>({
+      url: '/api/ielts-writing/tasks',
+      method: 'POST',
+      data,
+    })
+    return res.data
+  },
+
+  /** PUT /api/ielts-writing/tasks/:taskId — Cập nhật (partial, chỉ field non-null) */
+  async updateTask(taskId: number, data: UpdateIeltsWritingTaskRequest) {
+    const res = await ApiService.fetchData<UpdateIeltsWritingTaskRequest, BaseResponse<IeltsWritingTaskManage>>({
+      url: `/api/ielts-writing/tasks/${taskId}`,
+      method: 'PUT',
+      data,
+    })
+    return res.data
+  },
+
+  /** DELETE /api/ielts-writing/tasks/:taskId — Xóa (lỗi nếu đã có submissions) */
+  async deleteTask(taskId: number) {
+    const res = await ApiService.fetchData<null, BaseResponse<null>>({
+      url: `/api/ielts-writing/tasks/${taskId}`,
+      method: 'DELETE',
     })
     return res.data
   },

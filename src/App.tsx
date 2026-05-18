@@ -1,8 +1,10 @@
 import '@mantine/core/styles.css';
 import '@mantine/dates/styles.css';
+import '@mantine/notifications/styles.css';
 import './global.scss';
 import 'dayjs/locale/vi';
 import { MantineProvider } from '@mantine/core';
+import { Notifications } from '@mantine/notifications';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import { BrowserRouter } from 'react-router-dom';
@@ -24,6 +26,7 @@ export default function App() {
 
   return (
     <MantineProvider theme={theme}>
+      <Notifications position="top-right" />
       <DatesProvider settings={{ locale: 'vi' }}>
         <Provider store={store}>
           <PersistGate loading={null} persistor={persistor}>

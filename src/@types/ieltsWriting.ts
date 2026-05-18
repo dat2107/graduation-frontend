@@ -14,6 +14,35 @@ export interface IeltsWritingTask {
   createdAt: string
 }
 
+/** Teacher-side task shape — identical to IeltsWritingTaskRes from BE */
+export type IeltsWritingTaskManage = IeltsWritingTask
+
+/** Matches BE: CreateIeltsWritingTaskReq */
+export interface CreateIeltsWritingTaskRequest {
+  title: string
+  promptText: string
+  taskType: IeltsWritingTaskType
+  promptImageUrl?: string
+  topic?: string
+  timeLimitMinutes?: number
+  minWords?: number
+  sampleAnswer?: string
+  sampleBand?: number
+}
+
+/** Matches BE: UpdateIeltsWritingTaskReq — all fields optional (partial update) */
+export interface UpdateIeltsWritingTaskRequest {
+  title?: string
+  promptText?: string
+  taskType?: IeltsWritingTaskType
+  promptImageUrl?: string
+  topic?: string
+  timeLimitMinutes?: number
+  minWords?: number
+  sampleAnswer?: string
+  sampleBand?: number
+}
+
 export interface IeltsWritingSubmission {
   id: number
   taskId: number

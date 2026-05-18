@@ -8,7 +8,7 @@ import {
   Anchor,
   Button,
   Card,
-  FileInput,
+  FileButton,
   Group,
   Loader,
   Menu,
@@ -558,7 +558,7 @@ const TeacherVocabularyTopicDetail = () => {
               setFormData({ ...formData, example: e.currentTarget.value })
             }
           />
-          <Group grow>
+          <Group grow align="flex-end">
             <TextInput
               label="Audio URL"
               placeholder="https://..."
@@ -569,28 +569,36 @@ const TeacherVocabularyTopicDetail = () => {
             />
             <TextInput
               label="Image URL"
-              placeholder="https://..."
+              placeholder="Dán URL hoặc bấm icon để upload"
               value={formData.imageUrl}
               onChange={(e) =>
                 setFormData({ ...formData, imageUrl: e.currentTarget.value })
               }
+              rightSectionWidth={36}
+              rightSection={
+                <FileButton
+                  onChange={handleImageFileChange}
+                  accept="image/png,image/jpeg,image/webp,image/gif"
+                >
+                  {(props) => (
+                    <ActionIcon
+                      {...props}
+                      variant="subtle"
+                      color="blue"
+                      disabled={imageUploading}
+                      aria-label="Upload ảnh"
+                    >
+                      {imageUploading ? (
+                        <Loader size={14} />
+                      ) : (
+                        <IconUpload size={16} />
+                      )}
+                    </ActionIcon>
+                  )}
+                </FileButton>
+              }
             />
           </Group>
-          <FileInput
-            label="Upload ảnh từ máy"
-            placeholder="Chọn ảnh để upload lên MinIO"
-            accept="image/*"
-            clearable
-            leftSection={<IconUpload size={16} />}
-            rightSection={imageUploading ? <Loader size="xs" /> : null}
-            disabled={imageUploading}
-            onChange={handleImageFileChange}
-          />
-          {formData.imageUrl && (
-            <Text size="xs" c="dimmed">
-              MinIO path: {formData.imageUrl}
-            </Text>
-          )}
           <Group justify="flex-end" mt="sm">
             <Button variant="default" onClick={closeModal}>
               Hủy

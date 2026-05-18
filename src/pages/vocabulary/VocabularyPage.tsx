@@ -96,9 +96,6 @@ function VocabSetCard({ set, onClick }: { set: VocabSet; onClick: () => void }) 
         <Text fw={700} size="md" mt={8} lineClamp={1}>
           {set.name}
         </Text>
-        <Text size="xs" c="dimmed">
-          {set.topic}
-        </Text>
       </Card.Section>
 
       <Stack p="md" gap="sm">

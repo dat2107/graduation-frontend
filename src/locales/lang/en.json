@@ -20,6 +20,8 @@
     "teacherVocabulary": "Vocabulary Mgmt",
     "teacherGrammar": "Grammar Mgmt",
     "teacherListening": "Listening Mgmt",
+    "teacherSpeaking": "Speaking Mgmt",
+    "teacherIeltsWriting": "IELTS Writing Mgmt",
     "adminDivider": "System Administration",
     "adminDashboard": "Dashboard",
     "adminUsers": "User Management",

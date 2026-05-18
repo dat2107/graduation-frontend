@@ -94,7 +94,6 @@ const TeacherVocabularyPage = () => {
     name: '',
     description: '',
     level: 'A1',
-    topic: '',
     emoji: '',
   });
 
@@ -133,7 +132,6 @@ const TeacherVocabularyPage = () => {
       name: '',
       description: '',
       level: 'A1',
-      topic: '',
       emoji: '',
     });
     openModal();
@@ -145,7 +143,6 @@ const TeacherVocabularyPage = () => {
       name: t.name,
       description: t.description,
       level: t.level,
-      topic: t.topic,
       emoji: t.emoji,
     });
     openModal();
@@ -367,11 +364,6 @@ const TeacherVocabularyPage = () => {
                           <Text size="sm" fw={500}>
                             {t.name}
                           </Text>
-                          {t.topic && (
-                            <Text size="xs" c="dimmed">
-                              {t.topic}
-                            </Text>
-                          )}
                         </div>
                       </Group>
                     </Table.Td>
@@ -519,14 +511,6 @@ const TeacherVocabularyPage = () => {
               }
             />
           </Group>
-          <TextInput
-            label="Danh mục"
-            placeholder="VD: Daily Life, Science..."
-            value={formData.topic}
-            onChange={(e) =>
-              setFormData({ ...formData, topic: e.currentTarget.value })
-            }
-          />
           {editingTopic && (
             <Switch
               label="Hiển thị cho học viên"

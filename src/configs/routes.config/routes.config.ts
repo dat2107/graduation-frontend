@@ -180,6 +180,18 @@ export const protectedRoutes = [
     component: lazy(() => import('@/pages/teacher/listening/TeacherListeningTopicDetail')),
     authority: ['TEACHER', 'ADMIN'],
   },
+  {
+    key: 'teacher.speaking',
+    path: '/teacher/speaking',
+    component: lazy(() => import('@/pages/teacher/speaking/TeacherSpeakingPage')),
+    authority: ['TEACHER', 'ADMIN'],
+  },
+  {
+    key: 'teacher.ielts-writing',
+    path: '/teacher/ielts-writing',
+    component: lazy(() => import('@/pages/teacher/ielts-writing/TeacherIeltsWritingPage')),
+    authority: ['TEACHER', 'ADMIN'],
+  },
   // ── Admin ──────────────────────────────────────────────────────────────────
   {
     key: 'admin.dashboard',

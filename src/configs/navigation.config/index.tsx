@@ -127,6 +127,24 @@ const navigationConfig: NavigationTree[] = [
     authority: ['TEACHER'],
     subMenu: [],
   },
+  {
+    key: 'teacher.speaking',
+    path: '/teacher/speaking',
+    title: 'QL Luyện nói',
+    translateKey: 'nav.teacherSpeaking',
+    icon: IconMicrophone,
+    authority: ['TEACHER'],
+    subMenu: [],
+  },
+  {
+    key: 'teacher.ielts-writing',
+    path: '/teacher/ielts-writing',
+    title: 'QL IELTS Writing',
+    translateKey: 'nav.teacherIeltsWriting',
+    icon: IconPencilCheck,
+    authority: ['TEACHER'],
+    subMenu: [],
+  },
   // ── Admin ──────────────────────────────────────────────────────────────────
   {
     key: 'admin.divider',

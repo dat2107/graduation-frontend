@@ -388,9 +388,6 @@ export default function VocabularySetDetail() {
             <Badge color={levelColor2} variant="filled">
               {setDetail.level}
             </Badge>
-            <Badge color="gray" variant="light">
-              {setDetail.topic}
-            </Badge>
           </Group>
           <Text size="sm" c="dimmed">
             {setDetail.description}

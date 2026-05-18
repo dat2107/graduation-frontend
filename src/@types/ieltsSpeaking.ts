@@ -54,3 +54,37 @@ export interface IeltsSpeakingHistory {
   status: IeltsSpeakingSessionStatus
   createdAt: string
 }
+
+// ─── Teacher Management ─────────────────────────────────────────────────────
+
+/** Teacher list-row shape — identical to IeltsSpeakingTestRes from BE */
+export type IeltsSpeakingTestManage = IeltsSpeakingTest
+
+/** Question item payload used when creating/updating a test */
+export interface IeltsSpeakingQuestionItem {
+  part: IeltsSpeakingPart
+  questionText: string
+  cueCardText?: string | null
+  orderIndex: number
+  prepTimeSeconds?: number
+}
+
+/** Matches BE: CreateIeltsSpeakingTestReq */
+export interface CreateIeltsSpeakingTestRequest {
+  title: string
+  description?: string
+  topic?: string
+  questions: IeltsSpeakingQuestionItem[]
+}
+
+/**
+ * Matches BE: UpdateIeltsSpeakingTestReq
+ * All fields optional (partial, null-aware). If `questions` is provided,
+ * BE performs a FULL replacement of the test's question list.
+ */
+export interface UpdateIeltsSpeakingTestRequest {
+  title?: string
+  description?: string
+  topic?: string
+  questions?: IeltsSpeakingQuestionItem[]
+}
