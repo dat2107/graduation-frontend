@@ -28,7 +28,7 @@ import { useAudio } from '@/utils/hooks/useAudio'
 import { useNavigate, useParams } from 'react-router-dom'
 import { VocabularyService } from '@/services/vocabulary/vocabulary.service'
 import type { VocabSetDetail, VocabWord, WordLevel, WordStatus } from '@/@types/vocabulary'
-import styles from './Flashcard.module.css'
+import styles from '@/css/pages/vocabulary/Flashcard.module.css'
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 

@@ -1,0 +1,12 @@
+node_modules
+.env
+.env.*
+.idea
+.git
+dist
+*.md
+.storybook
+test-utils
+vitest.setup.mjs
+vite-dev.log
+vite-dev.err.log

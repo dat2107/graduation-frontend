@@ -76,7 +76,7 @@ export default function SignIn() {
   }
 
   const handleGoogleSignIn = () => {
-    window.location.href = '/oauth2/authorization/google'
+    window.location.href = '/oauth2/authorization/keycloak'
   }
 
   return (

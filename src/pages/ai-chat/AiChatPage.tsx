@@ -33,7 +33,7 @@ import type {
   ChatMessage,
   EnglishLevel,
 } from '@/@types/chat';
-import styles from './AiChatPage.module.css';
+import styles from '@/css/pages/ai-chat/AiChatPage.module.css';
 
 const LEVEL_OPTIONS = [
   { value: 'A1', label: 'A1 - Beginner' },
@@ -435,9 +435,6 @@ export default function AiChatPage({ quickStart = false }: AiChatPageProps) {
                   {activeConv?.englishLevel}
                 </Badge>
               </Group>
-              <Text size="xs" c="dimmed">
-                {activeConv?.aiProvider} / {activeConv?.model}
-              </Text>
             </Group>
 
             {/* Messages */}

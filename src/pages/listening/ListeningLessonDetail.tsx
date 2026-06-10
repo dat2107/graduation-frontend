@@ -33,6 +33,7 @@ import {
   IconStar,
   IconX,
 } from '@tabler/icons-react';
+import { notifications } from '@mantine/notifications';
 import { ListeningService } from '@/services/listening/listening.service';
 import type {
   ListeningLessonDetail as LessonDetailType,
@@ -163,7 +164,7 @@ function AudioPlayer({
         <Stack gap={4} style={{ flex: 1 }}>
           {useTTS ? (
             <Text size="sm" c="teal" fw={500}>
-              {playing ? 'Dang doc...' : 'Nhan Play de nghe (Text-to-Speech)'}
+              {playing ? 'Đang đọc...' : 'Nhấn Play để nghe'}
             </Text>
           ) : (
             <>
@@ -188,11 +189,6 @@ function AudioPlayer({
           )}
         </Stack>
       </Group>
-      {useTTS && audioError && (
-        <Text size="xs" c="dimmed" mt="xs">
-          Audio file khong kha dung. Su dung Text-to-Speech.
-        </Text>
-      )}
     </Card>
   );
 }
@@ -418,8 +414,30 @@ export default function ListeningLessonDetailPage() {
     fetch();
   }, [lessonId]);
 
+  const detectNonEnglish = (text: string): boolean => {
+    const cleaned = text.replace(/[\s\d.,!?;:'"()\-–—\[\]{}@#$%^&*+=<>/\\|~`_]/g, '');
+    if (!cleaned) return false;
+    const nonEnglishChars = cleaned.replace(/[a-zA-Z]/g, '').length;
+    return nonEnglishChars / cleaned.length > 0.15;
+  };
+
   const handleSubmit = async () => {
     if (!lessonId || !lesson) return;
+
+    const dictationAnswers = Object.entries(answers).filter(([qId]) => {
+      const q = lesson.questions.find((question) => question.id === Number(qId));
+      return q?.type === 'dictation';
+    });
+    const hasNonEnglish = dictationAnswers.some(([, val]) => detectNonEnglish(val));
+    if (hasNonEnglish) {
+      notifications.show({
+        title: 'Vui lòng trả lời bằng tiếng Anh',
+        message: 'Câu trả lời chính tả chứa ký tự không phải tiếng Anh. Hãy nhập bằng tiếng Anh.',
+        color: 'orange',
+      });
+      return;
+    }
+
     setSubmitting(true);
     const res = await ListeningService.submitAnswers(Number(lessonId), answers);
     if (res?.status === 200 && res.data) {

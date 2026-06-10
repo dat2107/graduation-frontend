@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
-import { Badge, Button, Center, Divider, Group, Loader, Paper, RingProgress, SimpleGrid, Stack, Text, Title } from '@mantine/core'
+import { Button, Center, Divider, Group, Loader, Paper, RingProgress, SimpleGrid, Stack, Text, Title } from '@mantine/core'
 import { IconArrowLeft } from '@tabler/icons-react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { SpeakingService } from '@/services/speaking/speaking.service'
 import type { SpeakingSubmission } from '@/@types/speaking'
+import { MarkdownContent } from '@/components/MarkdownContent'
 
 const getScoreColor = (score: number) => {
   if (score >= 80) return 'green'
@@ -84,7 +85,7 @@ const SpeakingResult = () => {
         <Paper withBorder p="lg" radius="md">
           <Text fw={600} mb="sm">Nhận xét từ AI</Text>
           <Divider mb="sm" />
-          <div style={{ whiteSpace: 'pre-wrap', lineHeight: 1.8 }}>{submission.aiFeedback}</div>
+          <MarkdownContent content={submission.aiFeedback} />
         </Paper>
       )}
 

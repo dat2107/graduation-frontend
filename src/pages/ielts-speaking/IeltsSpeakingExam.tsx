@@ -6,7 +6,7 @@ import { notifications } from '@mantine/notifications'
 import { IeltsSpeakingService } from '@/services/ieltsSpeaking/ieltsSpeaking.service'
 import AudioRecorder from '@/components/AudioRecorder'
 import type { IeltsSpeakingTestDetail, IeltsSpeakingQuestion } from '@/@types/ieltsSpeaking'
-import styles from './IeltsSpeakingExam.module.css'
+import styles from '@/css/pages/ielts-speaking/IeltsSpeakingExam.module.css'
 
 const partLabels: Record<string, string> = {
   PART_1: 'Part 1 — Introduction',

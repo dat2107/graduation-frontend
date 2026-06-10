@@ -20,6 +20,12 @@ const authRoute: Routes = [
     component: lazy(() => import('@/pages/auth/ForgotPassword')),
     authority: [],
   },
+  {
+    key: 'oauth2Callback',
+    path: `/oauth2/success`,
+    component: lazy(() => import('@/pages/auth/OAuth2Callback')),
+    authority: [],
+  },
 ];
 
 export default authRoute;

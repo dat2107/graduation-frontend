@@ -24,11 +24,12 @@ import {
   IconArrowRight,
   IconAlertTriangle,
 } from '@tabler/icons-react';
+import { notifications } from '@mantine/notifications';
 import { WritingService } from '@/services/writing/writing.service';
 import { MarkdownContent } from '@/components/MarkdownContent';
 import type { WritingSubmission, QuickCheckResponse } from '@/@types/writing';
 import type { EnglishLevel } from '@/@types/chat';
-import styles from './WritingCheckPage.module.css';
+import styles from '@/css/pages/writing-check/WritingCheckPage.module.css';
 
 const LEVEL_OPTIONS = [
   { value: 'A1', label: 'A1 - Beginner' },
@@ -74,6 +75,12 @@ export default function WritingCheckPage() {
       // Skip if text is too short or unchanged
       if (text.trim().length < 20 || text.trim() === lastCheckedRef.current) {
         if (text.trim().length < 20) setQuickCheck(null);
+        return;
+      }
+
+      // Skip if non-English content
+      if (detectNonEnglish(text)) {
+        setQuickCheck(null);
         return;
       }
 
@@ -130,9 +137,25 @@ export default function WritingCheckPage() {
     loadHistory();
   }, [loadHistory]);
 
+  // ── Language validation ────────────────────────────────────────────────────────
+  const detectNonEnglish = (text: string): boolean => {
+    const cleaned = text.replace(/[\s\d.,!?;:'"()\-–—\[\]{}@#$%^&*+=<>/\\|~`_]/g, '');
+    if (!cleaned) return false;
+    const nonEnglishChars = cleaned.replace(/[a-zA-Z]/g, '').length;
+    return nonEnglishChars / cleaned.length > 0.15;
+  };
+
   // ── Submit writing ─────────────────────────────────────────────────────────────
   const handleSubmit = async () => {
     if (!content.trim()) return;
+    if (detectNonEnglish(content)) {
+      notifications.show({
+        title: 'Vui lòng viết bằng tiếng Anh',
+        message: 'Bài viết chứa nhiều ký tự không phải tiếng Anh. Hãy viết hoàn toàn bằng tiếng Anh để AI đánh giá chính xác.',
+        color: 'orange',
+      });
+      return;
+    }
     setSubmitting(true);
     try {
       const res = await WritingService.submit({
@@ -401,7 +424,7 @@ export default function WritingCheckPage() {
                       Điểm tổng
                     </Text>
                     <Text size="sm" c="dimmed">
-                      {activeSubmission.englishLevel} | {activeSubmission.model}
+                      {activeSubmission.englishLevel}
                     </Text>
                   </Box>
                 </Group>

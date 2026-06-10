@@ -1,11 +1,11 @@
 import { useEffect, useState, useCallback } from 'react'
-import { Button, Center, Group, Loader, Paper, Stack, Text, Title, Badge } from '@mantine/core'
-import { IconArrowLeft, IconSend } from '@tabler/icons-react'
+import { Button, Center, Group, Loader, Paper, Stack, Text, Title, Badge, Card } from '@mantine/core'
+import { IconArrowLeft, IconSend, IconHistory } from '@tabler/icons-react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { notifications } from '@mantine/notifications'
 import { SpeakingService } from '@/services/speaking/speaking.service'
 import AudioRecorder from '@/components/AudioRecorder'
-import type { SpeakingTopic } from '@/@types/speaking'
+import type { SpeakingTopic, SpeakingSubmission } from '@/@types/speaking'
 
 const promptTypeLabels: Record<string, string> = {
   READ_ALOUD: 'Đọc to',
@@ -14,10 +14,17 @@ const promptTypeLabels: Record<string, string> = {
   ANSWER_QUESTION: 'Trả lời câu hỏi',
 }
 
+const getScoreColor = (score: number) => {
+  if (score >= 80) return 'green'
+  if (score >= 60) return 'yellow'
+  return 'red'
+}
+
 const SpeakingPractice = () => {
   const { topicId } = useParams<{ topicId: string }>()
   const navigate = useNavigate()
   const [topic, setTopic] = useState<SpeakingTopic | null>(null)
+  const [history, setHistory] = useState<SpeakingSubmission[]>([])
   const [loading, setLoading] = useState(true)
   const [submitting, setSubmitting] = useState(false)
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null)
@@ -27,6 +34,11 @@ const SpeakingPractice = () => {
     SpeakingService.getTopic(Number(topicId)).then((res) => {
       if (res?.status === 200 && res.data) setTopic(res.data)
       setLoading(false)
+    })
+    SpeakingService.getHistory().then((res) => {
+      if (res?.status === 200 && res.data) {
+        setHistory(res.data.filter((s) => s.topicId === Number(topicId)))
+      }
     })
   }, [topicId])
 
@@ -87,6 +99,37 @@ const SpeakingPractice = () => {
           {submitting ? 'Đang chấm bài...' : 'Nộp bài'}
         </Button>
       </Group>
+
+      {history.length > 0 && (
+        <Stack gap="sm">
+          <Group gap="xs">
+            <IconHistory size={20} />
+            <Title order={4}>Lịch sử luyện nói chủ đề này</Title>
+          </Group>
+          <Card withBorder radius="md" p="md">
+            {history.map((item) => {
+              const date = new Date(item.createdAt).toLocaleDateString('vi-VN')
+              return (
+                <Group
+                  key={item.id}
+                  justify="space-between"
+                  py={8}
+                  style={{ borderBottom: '1px solid var(--mantine-color-gray-2)', cursor: 'pointer' }}
+                  onClick={() => navigate(`/speaking/result/${item.id}`)}
+                >
+                  <div>
+                    <Text size="sm" fw={500}>{item.topicTitle}</Text>
+                    <Text size="xs" c="dimmed">{date}</Text>
+                  </div>
+                  <Badge color={getScoreColor(item.overallScore)} variant="filled" size="md">
+                    {item.overallScore} điểm
+                  </Badge>
+                </Group>
+              )
+            })}
+          </Card>
+        </Stack>
+      )}
     </Stack>
   )
 }
