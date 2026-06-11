@@ -34,7 +34,7 @@ export default function Profile() {
   ]
 
   const userId = useAppSelector((state) => state.auth.userInfo.userId)
-  const username = useAppSelector((state) => state.auth.userInfo.username)
+  const username = useAppSelector((state) => state.auth.userInfo.name)
   const role = useAppSelector((state) => state.auth.userInfo.role)
   const { loading, getUserInfo, updateInfo, updateAvatar } = useUser()
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)

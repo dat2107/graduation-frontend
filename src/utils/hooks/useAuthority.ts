@@ -1,5 +1,4 @@
 import { useMemo } from 'react';
-import isEmpty from 'lodash/isEmpty';
 
 function useAuthority(
   userAuthority: string[] = [],
@@ -12,8 +11,8 @@ function useAuthority(
   );
 
   if (
-    isEmpty(authority) ||
-    isEmpty(userAuthority) ||
+    authority.length === 0 ||
+    userAuthority.length === 0 ||
     typeof authority === 'undefined'
   ) {
     return !emptyCheck;

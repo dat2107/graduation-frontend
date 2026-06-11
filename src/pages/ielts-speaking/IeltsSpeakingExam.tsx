@@ -73,8 +73,9 @@ const IeltsSpeakingExam = () => {
           setCurrentIndex(nextIndex)
           startTimeRef.current = Date.now()
           const nextQ = test?.questions[nextIndex]
-          if (nextQ?.prepTimeSeconds > 0) {
-            setPrepTime(nextQ.prepTimeSeconds)
+          const nextPrepTime = nextQ?.prepTimeSeconds ?? 0
+          if (nextPrepTime > 0) {
+            setPrepTime(nextPrepTime)
           }
         }
       }

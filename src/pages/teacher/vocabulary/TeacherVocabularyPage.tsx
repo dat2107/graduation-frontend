@@ -54,6 +54,10 @@ const LEVEL_OPTIONS = [
   { value: 'C2', label: 'C2' },
 ];
 
+type TopicFormData = CreateVocabTopicRequest & {
+  active?: boolean;
+};
+
 const LEVEL_COLORS: Record<string, string> = {
   A1: 'green',
   A2: 'lime',
@@ -90,7 +94,7 @@ const TeacherVocabularyPage = () => {
     null
   );
   const [formLoading, setFormLoading] = useState(false);
-  const [formData, setFormData] = useState<CreateVocabTopicRequest>({
+  const [formData, setFormData] = useState<TopicFormData>({
     name: '',
     description: '',
     level: 'A1',
@@ -144,6 +148,7 @@ const TeacherVocabularyPage = () => {
       description: t.description,
       level: t.level,
       emoji: t.emoji,
+      active: t.active,
     });
     openModal();
   };
@@ -519,7 +524,7 @@ const TeacherVocabularyPage = () => {
                 setFormData({
                   ...formData,
                   active: e.currentTarget.checked,
-                } as any)
+                })
               }
             />
           )}
