@@ -277,23 +277,25 @@ function ResultScreen({
       {/* Answer review */}
       <Stack gap="sm">
         <Title order={4}>Xem lại đáp án</Title>
-        {result.details.map((d, i) => (
+        {result.details.map((d, i) => {
+          const isCorrect = d.isCorrect ?? d.correct;
+          return (
           <Card key={d.questionId} withBorder radius="md" p="md"
-            style={{ borderLeft: `4px solid var(--mantine-color-${d.isCorrect ? 'green' : 'red'}-5)` }}>
+            style={{ borderLeft: `4px solid var(--mantine-color-${isCorrect ? 'green' : 'red'}-5)` }}>
             <Group gap="xs" mb={8} align="flex-start">
-              <ThemeIcon size="sm" color={d.isCorrect ? 'green' : 'red'} variant="light" radius="xl">
-                {d.isCorrect ? <IconCheck size={12} /> : <IconX size={12} />}
+              <ThemeIcon size="sm" color={isCorrect ? 'green' : 'red'} variant="light" radius="xl">
+                {isCorrect ? <IconCheck size={12} /> : <IconX size={12} />}
               </ThemeIcon>
               <Text size="sm" fw={500} style={{ flex: 1 }}>
                 {i + 1}. {quiz.questions[i]?.questionText}
               </Text>
             </Group>
-            {!d.isCorrect && d.selectedAnswer && (
+            {!isCorrect && d.selectedAnswer && (
               <Text size="xs" c="red" mb={4}>
                 Bạn trả lời: {d.selectedAnswer}
               </Text>
             )}
-            {!d.isCorrect && (
+            {!isCorrect && (
               <Text size="xs" c="green" mb={4}>
                 Đáp án đúng: {d.correctAnswer}
               </Text>
@@ -302,7 +304,8 @@ function ResultScreen({
               <Text size="xs">{d.explanation}</Text>
             </Alert>
           </Card>
-        ))}
+          );
+        })}
       </Stack>
 
       <Group>

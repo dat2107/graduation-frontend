@@ -3,6 +3,7 @@ import { Badge, Button, Card, Center, Divider, Group, Loader, Paper, RingProgres
 import { IconArrowLeft } from '@tabler/icons-react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { IeltsSpeakingService } from '@/services/ieltsSpeaking/ieltsSpeaking.service'
+import { MarkdownContent } from '@/components/MarkdownContent'
 import type { IeltsSpeakingSession } from '@/@types/ieltsSpeaking'
 
 const getBandColor = (band: number) => {
@@ -85,7 +86,7 @@ const IeltsSpeakingResult = () => {
         <Paper withBorder p="lg" radius="md">
           <Text fw={600} mb="sm">Nhận xét từ AI</Text>
           <Divider mb="sm" />
-          <div style={{ whiteSpace: 'pre-wrap', lineHeight: 1.8 }}>{session.aiFeedback}</div>
+          <MarkdownContent content={session.aiFeedback} />
         </Paper>
       )}
 

@@ -291,24 +291,26 @@ function ResultView({
       {/* Answer details */}
       <Title order={5}>Chi tiết đáp án</Title>
       <Stack gap="sm">
-        {result.details.map((d, i) => (
+        {result.details.map((d, i) => {
+          const isCorrect = d.isCorrect ?? d.correct;
+          return (
           <Card
             key={d.exerciseId}
             withBorder
             radius="md"
             p="sm"
             style={{
-              borderLeft: `4px solid var(--mantine-color-${d.isCorrect ? 'green' : 'red'}-5)`,
+              borderLeft: `4px solid var(--mantine-color-${isCorrect ? 'green' : 'red'}-5)`,
             }}
           >
             <Group gap="xs" mb={4}>
               <ThemeIcon
                 size="xs"
                 radius="xl"
-                color={d.isCorrect ? 'green' : 'red'}
+                color={isCorrect ? 'green' : 'red'}
                 variant="filled"
               >
-                {d.isCorrect ? <IconCheck size={10} /> : <IconX size={10} />}
+                {isCorrect ? <IconCheck size={10} /> : <IconX size={10} />}
               </ThemeIcon>
               <Text size="sm" fw={500}>
                 Câu {i + 1}
@@ -317,7 +319,7 @@ function ResultView({
             <Text size="xs" c="dimmed" mb={4}>
               {d.questionText}
             </Text>
-            {!d.isCorrect && (
+            {!isCorrect && (
               <Group gap="xs" mb={4}>
                 <Text size="xs" c="red">
                   Bạn chọn: {d.selectedAnswer || '(bỏ trống)'}
@@ -333,7 +335,8 @@ function ResultView({
               </Text>
             )}
           </Card>
-        ))}
+          );
+        })}
       </Stack>
 
       {/* Actions */}

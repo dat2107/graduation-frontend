@@ -56,6 +56,8 @@ export interface ListeningAnswerDetail {
   selectedAnswer: string
   correctAnswer: string
   isCorrect: boolean
+  /** Fallback: backend (Lombok/Jackson) may serialize the boolean as `correct` */
+  correct?: boolean
   explanation: string
 }
 

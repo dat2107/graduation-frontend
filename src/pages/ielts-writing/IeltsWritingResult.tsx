@@ -3,6 +3,7 @@ import { Badge, Button, Center, Divider, Group, Loader, Paper, RingProgress, Sim
 import { IconArrowLeft } from '@tabler/icons-react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { IeltsWritingService } from '@/services/ieltsWriting/ieltsWriting.service'
+import { MarkdownContent } from '@/components/MarkdownContent'
 import type { IeltsWritingSubmission } from '@/@types/ieltsWriting'
 
 const getBandColor = (band: number) => {
@@ -77,7 +78,7 @@ const IeltsWritingResult = () => {
         <Paper withBorder p="lg" radius="md">
           <Text fw={600} mb="sm">Nhận xét từ AI</Text>
           <Divider mb="sm" />
-          <div style={{ whiteSpace: 'pre-wrap', lineHeight: 1.8 }}>{submission.aiFeedback}</div>
+          <MarkdownContent content={submission.aiFeedback} />
         </Paper>
       )}
 

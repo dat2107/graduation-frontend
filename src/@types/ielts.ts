@@ -46,6 +46,8 @@ export interface IeltsAnswerDetail {
   selectedAnswer: string | null
   correctAnswer: string
   isCorrect: boolean
+  /** Fallback: backend (Lombok/Jackson) may serialize the boolean as `correct` */
+  correct?: boolean
   explanation: string
 }
 
