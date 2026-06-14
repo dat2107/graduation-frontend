@@ -47,9 +47,10 @@ function SentenceOrderInput({
   onChange: (v: string) => void
   disabled: boolean
 }) {
-  // Extract words from the question text after "Arrange:" or "Arrange the words:"
-  const arrangeMatch = questionText.match(/Arrange(?:\s+the\s+words)?:\s*(.+)/i)
-  const rawWords = arrangeMatch ? arrangeMatch[1] : questionText
+  // Strip the prompt prefix before the colon (supports "Arrange:", "Sắp xếp ...:", etc.).
+  // The word list always follows the first colon, e.g. "Sắp xếp thành câu đúng: swim / can / he / well".
+  const colonIdx = questionText.indexOf(':')
+  const rawWords = colonIdx !== -1 ? questionText.slice(colonIdx + 1) : questionText
   const allWords = rawWords
     .split(/\s*\/\s*/)
     .map((w) => w.trim())

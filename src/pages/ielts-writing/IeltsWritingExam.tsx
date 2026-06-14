@@ -4,6 +4,7 @@ import { IconClock, IconSend } from '@tabler/icons-react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { notifications } from '@mantine/notifications'
 import { IeltsWritingService } from '@/services/ieltsWriting/ieltsWriting.service'
+import { TaskChart, stripChartData } from '@/components/TaskChart'
 import type { IeltsWritingTask } from '@/@types/ieltsWriting'
 
 const IeltsWritingExam = () => {
@@ -77,9 +78,11 @@ const IeltsWritingExam = () => {
 
       <Paper withBorder p="lg" radius="md" bg="gray.0">
         <Text size="sm" fw={600} mb="xs">Đề bài:</Text>
-        <Text style={{ whiteSpace: 'pre-wrap' }}>{task.promptText}</Text>
+        <Text style={{ whiteSpace: 'pre-wrap' }}>{stripChartData(task.promptText)}</Text>
         {task.promptImageUrl && <img src={task.promptImageUrl} alt="Task" style={{ maxWidth: '100%', marginTop: 12, borderRadius: 8 }} />}
       </Paper>
+
+      {!task.promptImageUrl && <TaskChart promptText={task.promptText} />}
 
       <Textarea
         placeholder="Viết bài của bạn tại đây..."
