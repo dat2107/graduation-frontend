@@ -83,7 +83,7 @@ const IeltsWritingResult = () => {
       )}
 
       <Group justify="center">
-        <Button variant="light" leftSection={<IconArrowLeft size={16} />} onClick={() => navigate('/ielts-writing')}>
+        <Button variant="light" leftSection={<IconArrowLeft size={16} />} onClick={() => navigate('/ielts-practice')}>
           Quay lại danh sách
         </Button>
       </Group>

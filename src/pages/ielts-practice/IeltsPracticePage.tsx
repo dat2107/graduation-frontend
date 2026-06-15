@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import {
   Badge,
   Button,
@@ -35,8 +35,12 @@ import type {
   IeltsSkill,
   IeltsTest,
 } from '@/@types/ielts'
-import type { IeltsWritingTask, IeltsWritingTaskType } from '@/@types/ieltsWriting'
-import type { IeltsSpeakingTest } from '@/@types/ieltsSpeaking'
+import type {
+  IeltsWritingTask,
+  IeltsWritingTaskType,
+  IeltsWritingSubmission,
+} from '@/@types/ieltsWriting'
+import type { IeltsSpeakingTest, IeltsSpeakingHistory } from '@/@types/ieltsSpeaking'
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -368,13 +372,24 @@ function SpeakingTestCard({
   )
 }
 
-// ─── History Row ─────────────────────────────────────────────────────────────
+// ─── History (unified across skills) ─────────────────────────────────────────
 
-function HistoryRow({ item }: { item: IeltsHistoryItem }) {
-  const scoreColor =
-    item.score >= 80 ? 'green' : item.score >= 60 ? 'yellow' : 'red'
-  const date = new Date(item.completedAt).toLocaleDateString('vi-VN')
-  const skill = skillConfig[item.skill] ?? { label: item.skill ?? 'Unknown', color: 'gray' }
+/** A single history entry normalised across Reading/Listening, Writing & Speaking. */
+interface UnifiedHistoryItem {
+  key: string
+  title: string
+  skillLabel: string
+  skillColor: string
+  date: string
+  scoreText: string
+  scoreColor: string
+  sortTs: number
+}
+
+const pctColor = (s: number) => (s >= 80 ? 'green' : s >= 60 ? 'yellow' : 'red')
+const bandColor = (b: number) => (b >= 7 ? 'green' : b >= 5.5 ? 'yellow' : 'red')
+
+function HistoryRow({ item }: { item: UnifiedHistoryItem }) {
   return (
     <Group
       justify="space-between"
@@ -383,19 +398,19 @@ function HistoryRow({ item }: { item: IeltsHistoryItem }) {
     >
       <div>
         <Group gap={6} mb={2}>
-          <Badge size="xs" color={skill.color} variant="light">
-            {skill.label}
+          <Badge size="xs" color={item.skillColor} variant="light">
+            {item.skillLabel}
           </Badge>
           <Text size="sm" fw={500}>
             {item.title}
           </Text>
         </Group>
         <Text size="xs" c="dimmed">
-          {date}
+          {new Date(item.date).toLocaleDateString('vi-VN')}
         </Text>
       </div>
-      <Badge color={scoreColor} variant="filled" size="md">
-        {item.score}%
+      <Badge color={item.scoreColor} variant="filled" size="md">
+        {item.scoreText}
       </Badge>
     </Group>
   )
@@ -414,24 +429,49 @@ export default function IeltsPracticePage() {
 
   // Writing data
   const [writingTasks, setWritingTasks] = useState<IeltsWritingTask[]>([])
+  const [writingHistory, setWritingHistory] = useState<IeltsWritingSubmission[]>([])
 
   // Speaking data
   const [speakingTests, setSpeakingTests] = useState<IeltsSpeakingTest[]>([])
+  const [speakingHistory, setSpeakingHistory] = useState<IeltsSpeakingHistory[]>([])
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true)
 
       if (activeSkill === 'writing') {
-        const res = await IeltsWritingService.getTasks()
-        if (res?.status === 200 && res.data) setWritingTasks(res.data)
+        const [tasksRes, whRes] = await Promise.all([
+          IeltsWritingService.getTasks(),
+          IeltsWritingService.getHistory(),
+        ])
+        if (tasksRes?.status === 200 && tasksRes.data) setWritingTasks(tasksRes.data)
+        if (whRes?.status === 200 && whRes.data) setWritingHistory(whRes.data)
       } else if (activeSkill === 'speaking') {
-        const res = await IeltsSpeakingService.getTests()
-        if (res?.status === 200 && res.data) setSpeakingTests(res.data)
+        const [testsRes, shRes] = await Promise.all([
+          IeltsSpeakingService.getTests(),
+          IeltsSpeakingService.getHistory(),
+        ])
+        if (testsRes?.status === 200 && testsRes.data) setSpeakingTests(testsRes.data)
+        if (shRes?.status === 200 && shRes.data) setSpeakingHistory(shRes.data)
+      } else if (activeSkill === 'all') {
+        // Tab "Tất cả": gộp đủ 4 kỹ năng + lịch sử của cả ba loại.
+        const [testsRes, historyRes, writingRes, speakingRes, whRes, shRes] = await Promise.all([
+          IeltsService.getTests(),
+          IeltsService.getHistory(),
+          IeltsWritingService.getTasks(),
+          IeltsSpeakingService.getTests(),
+          IeltsWritingService.getHistory(),
+          IeltsSpeakingService.getHistory(),
+        ])
+        if (testsRes?.status === 200 && testsRes.data) setTests(testsRes.data)
+        if (historyRes?.status === 200 && historyRes.data) setHistory(historyRes.data)
+        if (writingRes?.status === 200 && writingRes.data) setWritingTasks(writingRes.data)
+        if (speakingRes?.status === 200 && speakingRes.data) setSpeakingTests(speakingRes.data)
+        if (whRes?.status === 200 && whRes.data) setWritingHistory(whRes.data)
+        if (shRes?.status === 200 && shRes.data) setSpeakingHistory(shRes.data)
       } else {
-        const params = activeSkill === 'all' ? undefined : { skill: activeSkill }
         const [testsRes, historyRes] = await Promise.all([
-          IeltsService.getTests(params),
+          IeltsService.getTests({ skill: activeSkill }),
           IeltsService.getHistory(),
         ])
         if (testsRes?.status === 200 && testsRes.data) setTests(testsRes.data)
@@ -444,15 +484,19 @@ export default function IeltsPracticePage() {
   }, [activeSkill])
 
   // Stats depend on active tab
+  const isAll = activeSkill === 'all'
   const isWriting = activeSkill === 'writing'
   const isSpeaking = activeSkill === 'speaking'
+  // Reading/Listening-based stats (done count, avg score, history) also apply to "Tất cả".
   const isReadingListening = !isWriting && !isSpeaking
 
   const totalCount = isWriting
     ? writingTasks.length
     : isSpeaking
       ? speakingTests.length
-      : tests.length
+      : isAll
+        ? tests.length + writingTasks.length + speakingTests.length
+        : tests.length
 
   const doneCount = isReadingListening
     ? tests.filter((t) => t.completedCount > 0).length
@@ -461,6 +505,55 @@ export default function IeltsPracticePage() {
   const avgScore = isReadingListening && history.length > 0
     ? `${Math.round(history.reduce((sum, h) => sum + h.score, 0) / history.length)}%`
     : '—'
+
+  // Unified, date-sorted history matching the active tab (10 most recent).
+  const unifiedHistory = useMemo<UnifiedHistoryItem[]>(() => {
+    const items: UnifiedHistoryItem[] = []
+    if (isAll || isReadingListening) {
+      history.forEach((h, i) => {
+        const sk = skillConfig[h.skill] ?? { label: h.skill ?? 'Unknown', color: 'gray' }
+        items.push({
+          key: `rl-${i}`,
+          title: h.title,
+          skillLabel: sk.label,
+          skillColor: sk.color,
+          date: h.completedAt,
+          scoreText: `${h.score}%`,
+          scoreColor: pctColor(h.score),
+          sortTs: new Date(h.completedAt).getTime(),
+        })
+      })
+    }
+    if (isAll || isWriting) {
+      writingHistory.forEach((w) => {
+        items.push({
+          key: `w-${w.id}`,
+          title: w.taskTitle,
+          skillLabel: 'Writing',
+          skillColor: 'pink',
+          date: w.createdAt,
+          scoreText: `Band ${w.overallBand}`,
+          scoreColor: bandColor(w.overallBand),
+          sortTs: new Date(w.createdAt).getTime(),
+        })
+      })
+    }
+    if (isAll || isSpeaking) {
+      speakingHistory.forEach((s) => {
+        items.push({
+          key: `s-${s.sessionId}`,
+          title: s.testTitle,
+          skillLabel: 'Speaking',
+          skillColor: 'grape',
+          date: s.createdAt,
+          scoreText: s.overallBand != null ? `Band ${s.overallBand}` : '—',
+          scoreColor: s.overallBand != null ? bandColor(s.overallBand) : 'gray',
+          sortTs: new Date(s.createdAt).getTime(),
+        })
+      })
+    }
+    return items.sort((a, b) => b.sortTs - a.sortTs).slice(0, 10)
+  }, [isAll, isReadingListening, isWriting, isSpeaking, history, writingHistory, speakingHistory])
 
   return (
     <Stack gap="xl" p="md">
@@ -568,6 +661,37 @@ export default function IeltsPracticePage() {
             ))}
           </SimpleGrid>
         )
+      ) : isAll ? (
+        tests.length + writingTasks.length + speakingTests.length === 0 ? (
+          <Stack align="center" py="xl">
+            <Text size="3rem">📭</Text>
+            <Text c="dimmed">Chưa có bài nào</Text>
+          </Stack>
+        ) : (
+          <SimpleGrid cols={{ base: 1, sm: 2, lg: 3 }} spacing="md">
+            {tests.map((test) => (
+              <IeltsTestCard
+                key={`r-${test.id}`}
+                test={test}
+                onClick={() => navigate(`/ielts-practice/${test.id}`)}
+              />
+            ))}
+            {writingTasks.map((task) => (
+              <WritingTaskCard
+                key={`w-${task.id}`}
+                task={task}
+                onClick={() => navigate(`/ielts-writing/exam/${task.id}`)}
+              />
+            ))}
+            {speakingTests.map((test) => (
+              <SpeakingTestCard
+                key={`s-${test.id}`}
+                test={test}
+                onClick={() => navigate(`/ielts-speaking/exam/${test.id}`)}
+              />
+            ))}
+          </SimpleGrid>
+        )
       ) : tests.length === 0 ? (
         <Stack align="center" py="xl">
           <Text size="3rem">📭</Text>
@@ -585,13 +709,13 @@ export default function IeltsPracticePage() {
         </SimpleGrid>
       )}
 
-      {/* ── History (Reading/Listening only) ────────────────────────────── */}
-      {isReadingListening && history.length > 0 && (
+      {/* ── History (theo tab đang chọn) ────────────────────────────────── */}
+      {unifiedHistory.length > 0 && (
         <Stack gap="sm">
           <Title order={4}>Lịch sử làm bài gần đây</Title>
           <Card withBorder radius="md" p="md">
-            {history.map((item, i) => (
-              <HistoryRow key={i} item={item} />
+            {unifiedHistory.map((item) => (
+              <HistoryRow key={item.key} item={item} />
             ))}
           </Card>
         </Stack>

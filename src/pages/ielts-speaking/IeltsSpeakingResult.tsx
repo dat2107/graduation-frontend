@@ -120,7 +120,7 @@ const IeltsSpeakingResult = () => {
       )}
 
       <Group justify="center">
-        <Button variant="light" leftSection={<IconArrowLeft size={16} />} onClick={() => navigate('/ielts-speaking')}>
+        <Button variant="light" leftSection={<IconArrowLeft size={16} />} onClick={() => navigate('/ielts-practice')}>
           Quay lại danh sách
         </Button>
       </Group>

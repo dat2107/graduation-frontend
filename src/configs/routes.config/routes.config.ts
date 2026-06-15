@@ -63,7 +63,7 @@ export const protectedRoutes = [
   {
     key: 'ielts-writing',
     path: '/ielts-writing',
-    component: lazy(() => import('@/pages/ielts-writing/IeltsWritingPage')),
+    component: lazy(() => import('@/pages/_redirect/RedirectToIeltsPractice')),
     authority: ['STUDENT', 'TEACHER', 'ADMIN'],
   },
   {
@@ -101,7 +101,7 @@ export const protectedRoutes = [
   {
     key: 'ielts-speaking',
     path: '/ielts-speaking',
-    component: lazy(() => import('@/pages/ielts-speaking/IeltsSpeakingTestList')),
+    component: lazy(() => import('@/pages/_redirect/RedirectToIeltsPractice')),
     authority: ['STUDENT', 'TEACHER', 'ADMIN'],
   },
   {
