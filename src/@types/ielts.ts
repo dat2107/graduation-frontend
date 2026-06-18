@@ -2,7 +2,10 @@
 
 export type IeltsSkill = 'reading' | 'listening'
 export type IeltsDifficulty = 'easy' | 'medium' | 'hard'
-export type IeltsQuestionType = 'multiple_choice' | 'true_false' | 'fill_in_blank'
+export type IeltsQuestionType =
+  | 'multiple_choice' | 'true_false' | 'matching' | 'map_labelling'
+  | 'fill_in_blank' | 'note_completion' | 'form_completion' | 'table_completion'
+  | 'flowchart_completion' | 'sentence_completion' | 'short_answer'
 
 export interface IeltsOption {
   optionKey: string

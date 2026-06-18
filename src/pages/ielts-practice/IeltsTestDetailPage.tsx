@@ -7,6 +7,7 @@ import {
   Button,
   Card,
   Divider,
+  Flex,
   Group,
   Loader,
   Paper,
@@ -37,6 +38,22 @@ import {
 import { useNavigate, useParams } from 'react-router-dom'
 import { IeltsService } from '@/services/ielts/ielts.service'
 import type { IeltsTestDetail, IeltsQuestion, IeltsSubmitResult } from '@/@types/ielts'
+
+// ─── Question type labels ──────────────────────────────────────────────────
+
+const QUESTION_TYPE_LABEL: Record<string, string> = {
+  multiple_choice: 'Trắc nghiệm',
+  true_false: 'True / False / Not Given',
+  matching: 'Nối thông tin',
+  map_labelling: 'Điền sơ đồ / bản đồ',
+  fill_in_blank: 'Điền từ',
+  note_completion: 'Hoàn thành ghi chú',
+  form_completion: 'Hoàn thành biểu mẫu',
+  table_completion: 'Hoàn thành bảng',
+  flowchart_completion: 'Hoàn thành sơ đồ',
+  sentence_completion: 'Hoàn thành câu',
+  short_answer: 'Trả lời ngắn',
+}
 
 // ─── Timer hook ──────────────────────────────────────────────────────────────
 
@@ -328,34 +345,21 @@ function TestScreen({
   quiz: IeltsTestDetail
   onDone: (result: IeltsSubmitResult) => void
 }) {
-  const [current, setCurrent] = useState(0)
   const [answers, setAnswers] = useState<Record<number, string>>({})
   const [submitting, setSubmitting] = useState(false)
   const timer = useTimer()
 
   useEffect(() => { timer.start() }, [])  // eslint-disable-line
 
-  const question: IeltsQuestion = quiz.questions[current]
-  const selected = answers[question.id] ?? ''
-  const isLast = current === quiz.questions.length - 1
-  const answeredCount = Object.keys(answers).length
-  const progress = Math.round((answeredCount / quiz.questions.length) * 100)
+  const total = quiz.questions.length
+  const answeredCount = Object.values(answers).filter((v) => v?.toString().trim()).length
+  const progress = Math.round((answeredCount / total) * 100)
 
-  const handleSelectOption = (optionKey: string) => {
-    setAnswers((prev) => ({ ...prev, [question.id]: optionKey }))
-  }
+  const setAnswer = (id: number, value: string) =>
+    setAnswers((prev) => ({ ...prev, [id]: value }))
 
-  const handleFillChange = (value: string) => {
-    setAnswers((prev) => ({ ...prev, [question.id]: value }))
-  }
-
-  const handleNext = () => {
-    if (!isLast) setCurrent((c) => c + 1)
-  }
-
-  const handlePrev = () => {
-    if (current > 0) setCurrent((c) => c - 1)
-  }
+  const scrollToQ = (id: number) =>
+    document.getElementById(`q-${id}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' })
 
   const handleSubmit = async () => {
     if (submitting) return
@@ -372,137 +376,163 @@ function TestScreen({
     }
   }
 
-  // Show reading passage once for the test (all questions share same passage)
-  const showPassage = quiz.skill === 'reading' && question.passage
+  const isReading = quiz.skill === 'reading'
 
-  return (
-    <Stack gap="lg" maw={800} mx="auto">
-      {/* Progress header */}
-      <Box>
-        <Group justify="space-between" mb={6}>
-          <Text size="sm" c="dimmed">Câu {current + 1} / {quiz.questions.length}</Text>
-          <Group gap={4}>
-            <IconClock size={14} color="var(--mantine-color-gray-6)" />
-            <Text size="sm" c="dimmed" ff="monospace">{timer.format(timer.seconds)}</Text>
-          </Group>
+  // Group questions by part. Each part has its passage (passage 1/2/3 for reading)
+  // and the question range for the "Part N · Câu X–Y" header.
+  const parts: { part: number; passage: string | null; from: number; to: number; questions: IeltsQuestion[] }[] = []
+  quiz.questions.forEach((q) => {
+    let p = parts.find((x) => x.part === q.partNumber)
+    if (!p) {
+      p = { part: q.partNumber, passage: q.passage ?? null, from: q.orderIndex, to: q.orderIndex, questions: [] }
+      parts.push(p)
+    }
+    if (!p.passage && q.passage) p.passage = q.passage
+    p.from = Math.min(p.from, q.orderIndex)
+    p.to = Math.max(p.to, q.orderIndex)
+    p.questions.push(q)
+  })
+
+  const renderQuestion = (q: IeltsQuestion) => {
+    const useOptions = (q.options?.length ?? 0) > 0
+    const value = answers[q.id] ?? ''
+    return (
+      <Card key={q.id} id={`q-${q.id}`} withBorder radius="md" p="md">
+        <Group gap={10} align="flex-start" wrap="nowrap" mb={8}>
+          <Box
+            style={{
+              minWidth: 26, height: 26, borderRadius: '50%', flexShrink: 0,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontSize: 12, fontWeight: 700,
+              background: value ? 'var(--mantine-color-blue-5)' : 'var(--mantine-color-gray-2)',
+              color: value ? 'white' : 'var(--mantine-color-dark-5)',
+            }}
+          >
+            {q.orderIndex}
+          </Box>
+          <Text fw={500} size="sm" style={{ flex: 1, paddingTop: 3 }}>{q.questionText}</Text>
         </Group>
-        <Progress value={progress} size="sm" radius="xl" color="blue" />
-        <Text size="xs" c="dimmed" ta="right" mt={4}>
-          Đã trả lời: {answeredCount}/{quiz.questions.length}
-        </Text>
-      </Box>
-
-      {/* Audio player for Listening */}
-      {quiz.skill === 'listening' && quiz.audioUrl && (
-        <AudioPlayer url={quiz.audioUrl} />
-      )}
-
-      {/* Reading passage */}
-      {showPassage && (
-        <Paper withBorder radius="md" p="md" bg="blue.0" mah={300} style={{ overflowY: 'auto' }}>
-          <Group gap={6} mb={8}>
-            <IconBook size={16} color="var(--mantine-color-blue-6)" />
-            <Text size="sm" fw={600} c="blue">Đoạn văn</Text>
-          </Group>
-          <Text size="sm" style={{ lineHeight: 1.7 }}>{question.passage}</Text>
-        </Paper>
-      )}
-
-      {/* Question */}
-      <Card withBorder radius="md" p="lg">
-        <Stack gap="xs" mb="lg">
-          <Group gap={8}>
-            <Badge size="xs" color={
-              question.questionType === 'fill_in_blank' ? 'orange'
-              : question.questionType === 'true_false' ? 'teal' : 'blue'
-            } variant="light">
-              {question.questionType === 'fill_in_blank' ? 'Điền từ'
-              : question.questionType === 'true_false' ? 'True / False / Not Given' : 'Trắc nghiệm'}
-            </Badge>
-            <Badge size="xs" color="gray" variant="light">Câu {current + 1}</Badge>
-          </Group>
-          <Text fw={600} size="md">{question.questionText}</Text>
-        </Stack>
-
-        {/* Fill-in-blank input */}
-        {question.questionType === 'fill_in_blank' ? (
-          <TextInput
-            placeholder="Nhập đáp án của bạn..."
-            value={selected}
-            onChange={(e) => handleFillChange(e.currentTarget.value)}
-            size="md"
-            radius="md"
-          />
-        ) : (
-          <Stack gap="xs">
-            {question.options.map((opt) => (
+        {useOptions ? (
+          <Stack gap={6} style={{ marginLeft: 36 }}>
+            {q.options.map((opt) => (
               <OptionButton
                 key={opt.optionKey}
                 optionKey={opt.optionKey}
                 optionText={opt.optionText}
-                selected={selected === opt.optionKey}
+                selected={value === opt.optionKey}
                 correct={false}
                 revealed={false}
-                onClick={() => handleSelectOption(opt.optionKey)}
+                onClick={() => setAnswer(q.id, opt.optionKey)}
               />
             ))}
           </Stack>
+        ) : (
+          <TextInput
+            placeholder="Nhập đáp án..."
+            value={value}
+            onChange={(e) => setAnswer(q.id, e.currentTarget.value)}
+            size="sm"
+            style={{ maxWidth: 360, marginLeft: 36 }}
+          />
         )}
       </Card>
+    )
+  }
 
-      {/* Navigation */}
-      <Group justify="space-between">
-        <Button variant="light" onClick={handlePrev} disabled={current === 0}>
-          Câu trước
-        </Button>
-        <Group>
-          {isLast ? (
-            <Button
-              size="md"
-              leftSection={<IconCheck size={18} />}
-              loading={submitting}
-              onClick={handleSubmit}
-              color="green"
-            >
-              Nộp bài ({answeredCount}/{quiz.questions.length} câu)
-            </Button>
-          ) : (
-            <Button size="md" onClick={handleNext}>
-              Câu tiếp theo
-            </Button>
-          )}
-        </Group>
-      </Group>
+  // Reading: split layout — passage (left, sticky) + questions (right, scroll),
+  // one block per passage. Listening: single scrollable page (audio plays once).
+  const body = isReading ? (
+    parts.map((p) => (
+      <Flex key={p.part} gap="md" align="flex-start" mb="xl" direction={{ base: 'column', md: 'row' }}>
+        <Paper
+          withBorder radius="md" p="md" bg="blue.0"
+          style={{ flex: 1, position: 'sticky', top: 80, maxHeight: 'calc(100vh - 110px)', overflowY: 'auto' }}
+        >
+          <Badge variant="light" color="violet" mb={8}>Passage {p.part}</Badge>
+          <Text size="sm" style={{ lineHeight: 1.8, whiteSpace: 'pre-line' }}>{p.passage}</Text>
+        </Paper>
+        <Stack gap="sm" style={{ flex: 1 }}>
+          <Badge variant="light" color="violet">Part {p.part} · Câu {p.from}–{p.to}</Badge>
+          {p.questions.map(renderQuestion)}
+        </Stack>
+      </Flex>
+    ))
+  ) : (
+    parts.map((p) => (
+      <Box key={p.part}>
+        <Badge variant="light" color="violet" mt="md" mb={6}>Part {p.part} · Câu {p.from}–{p.to}</Badge>
+        {p.passage && (
+          <Paper withBorder radius="md" p="md" bg="blue.0" mb="sm">
+            <Text size="sm" style={{ lineHeight: 1.7, whiteSpace: 'pre-line' }}>{p.passage}</Text>
+          </Paper>
+        )}
+        <Stack gap="sm">
+          {p.questions.map(renderQuestion)}
+        </Stack>
+      </Box>
+    ))
+  )
 
-      {/* Question navigator */}
-      <Card withBorder radius="md" p="sm">
-        <Text size="xs" c="dimmed" mb={8}>Câu hỏi:</Text>
-        <Group gap={6}>
-          {quiz.questions.map((q, i) => (
-            <UnstyledButton
-              key={q.id}
-              onClick={() => setCurrent(i)}
-              style={{
-                width: 32, height: 32, borderRadius: 'var(--mantine-radius-sm)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: 12, fontWeight: i === current ? 700 : 400,
-                background: i === current
-                  ? 'var(--mantine-color-blue-5)'
-                  : answers[q.id]
-                    ? 'var(--mantine-color-green-1)'
-                    : 'var(--mantine-color-gray-1)',
-                color: i === current ? 'white' : 'inherit',
-                border: answers[q.id] && i !== current
-                  ? '1px solid var(--mantine-color-green-4)'
-                  : '1px solid var(--mantine-color-gray-3)',
-              }}
-            >
-              {i + 1}
-            </UnstyledButton>
-          ))}
+  return (
+    <Flex gap="lg" align="flex-start" justify="center">
+      <Stack gap="sm" maw={isReading ? 1140 : 820} style={{ flex: 1, minWidth: 0 }}>
+      {/* Sticky bar: audio + timer + submit stay visible while scrolling */}
+      <Box
+        style={{
+          position: 'sticky', top: 0, zIndex: 5,
+          background: 'var(--mantine-color-body)', paddingTop: 8, paddingBottom: 8,
+        }}
+      >
+        {quiz.skill === 'listening' && quiz.audioUrl && <AudioPlayer url={quiz.audioUrl} />}
+        <Group justify="space-between" mt={quiz.skill === 'listening' ? 8 : 0}>
+          <Group gap={6}>
+            <IconClock size={14} color="var(--mantine-color-gray-6)" />
+            <Text size="sm" c="dimmed" ff="monospace">{timer.format(timer.seconds)}</Text>
+            <Text size="sm" c="dimmed">· Đã trả lời {answeredCount}/{total}</Text>
+          </Group>
+          <Button size="sm" color="green" leftSection={<IconCheck size={16} />} loading={submitting} onClick={handleSubmit}>
+            Nộp bài
+          </Button>
         </Group>
-      </Card>
-    </Stack>
+        <Progress value={progress} size="xs" radius="xl" color="blue" mt={6} />
+      </Box>
+
+      {body}
+
+      </Stack>
+
+      {/* Bảng câu đã làm: cột dính bên phải, nằm trong bố cục nên không che nội dung */}
+      <Paper
+        withBorder radius="md" p="xs" visibleFrom="lg"
+        style={{
+          position: 'sticky', top: 76, width: 184, flexShrink: 0,
+          maxHeight: '80vh', overflowY: 'auto', background: 'var(--mantine-color-body)',
+        }}
+      >
+        <Text size="xs" c="dimmed" mb={6}>Đã làm {answeredCount}/{total}</Text>
+        <Box style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 6 }}>
+          {quiz.questions.map((q: IeltsQuestion) => {
+            const done = !!answers[q.id]?.toString().trim()
+            return (
+              <UnstyledButton
+                key={q.id}
+                onClick={() => scrollToQ(q.id)}
+                title={`Câu ${q.orderIndex}`}
+                style={{
+                  height: 28, borderRadius: 6, fontSize: 12, fontWeight: 600,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  background: done ? 'var(--mantine-color-green-5)' : 'var(--mantine-color-gray-1)',
+                  color: done ? 'white' : 'var(--mantine-color-dark-5)',
+                  border: `1px solid ${done ? 'var(--mantine-color-green-6)' : 'var(--mantine-color-gray-3)'}`,
+                }}
+              >
+                {q.orderIndex}
+              </UnstyledButton>
+            )
+          })}
+        </Box>
+      </Paper>
+    </Flex>
   )
 }
 
